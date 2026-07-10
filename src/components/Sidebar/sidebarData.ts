@@ -12,8 +12,8 @@ const BRAND_OPTIONS: SidebarItem[] = [
 ];
 
 export const DEFAULT_SIDEBAR_ITEMS: SidebarItem[] = [
-  { id: 'home', label: 'Home', type: 'link', href: '/', emphasis: 'normal' },
-  { id: 'brand', label: 'Brand', type: 'group', href: '/shop', defaultOpen: true, children: BRAND_OPTIONS },
+  { id: 'home', label: 'Home', type: 'link', href: '/admin' },
+  { id: 'brand', label: 'Brand', type: 'group', href: '/brand', defaultOpen: true, children: BRAND_OPTIONS },
   { id: 'shop', label: 'Shop', type: 'link', href: '/shop' },
   { id: 'on-sale', label: 'On Sale', type: 'link', href: '/on-sale' },
   { id: 'new-arrival', label: 'New Arrival', type: 'link', href: '/new-arrival' }

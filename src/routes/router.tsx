@@ -37,6 +37,7 @@ const routes: RouteObject[] = [
         children: [
           { path: "/admin", element: <AdminDashboard /> },
           { path: "/admin/users", element: <AdminUsers /> },
+          { path: "/brand", element: <ComingSoonPage title="Brand" /> },
           { path: "/shop", element: <ComingSoonPage title="Shop" /> },
           { path: "/on-sale", element: <ComingSoonPage title="On Sale" /> },
           {

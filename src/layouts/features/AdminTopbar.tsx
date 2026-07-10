@@ -19,12 +19,12 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
     );
 
     return (
-        <div className="fixed top-0 left-0 md:left-sidebar right-0 h-topbar bg-topbar border-b flex items-center gap-4 px-4 md:px-6 z-30">
+        <div className="fixed top-0 left-0 md:left-sidebar right-0 h-topbar bg-topbar  flex items-center gap-4 px-4 md:px-6 z-30">
             <button className="shrink-0 text-gray-600 md:hidden" onClick={onMenu} aria-label="Open sidebar">
                 <Menu size={20} />
             </button>
 
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full">
                 <Search size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                     type="search"
