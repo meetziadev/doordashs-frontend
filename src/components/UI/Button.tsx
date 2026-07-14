@@ -7,9 +7,9 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export const Button: React.FC<Props> = ({ children, variant = 'primary', className, ...props }) => {
   const variants: Record<string, string> = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
-    danger: 'bg-red-600 hover:bg-red-700 text-white'
+    primary: 'bg-primary-600 hover:bg-primary-700 text-inverse-foreground',
+    secondary: 'bg-surface-muted hover:bg-border-strong text-foreground',
+    danger: 'bg-danger hover:bg-danger-strong text-inverse-foreground'
   };
   return (
     <button className={classNames('px-4 py-2 rounded-md text-sm font-medium transition-colors', variants[variant] || variants.primary, className)} {...props}>

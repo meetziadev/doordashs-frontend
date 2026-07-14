@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand */
   --color-primary-50: #eef6ff;
   --color-primary-100: #d9ebff;
   --color-primary-200: #b6d7ff;
@@ -12,13 +13,73 @@
   --color-primary-800: #173f8a;
   --color-primary-900: #15356f;
 
-  --color-sidebar: #0f172a;
+  /* Page base */
+  --color-background: #f9fafb;
+  --color-foreground: #111827;
+
+  /* Card / panel surfaces */
+  --color-surface: #ffffff;
+  --color-surface-foreground: #111827;
+  --color-surface-muted: #f3f4f6;
+
+  /* Borders */
+  --color-border: #f3f4f6;
+  --color-border-strong: #d1d5db;
+
+  /* Muted / secondary text */
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
+  --color-subtle-foreground: #9ca3af;
+
+  /* Inverse (text/surfaces on dark fills) */
+  --color-inverse: #111827;
+  --color-inverse-foreground: #ffffff;
+
+  /* Modal/drawer scrim */
+  --color-scrim: #000000;
+
+  /* App shell */
+  --color-sidebar: #ffffff;
+  --color-sidebar-foreground: #111827;
+  --color-sidebar-border: #f3f4f6;
   --color-topbar: #ffffff;
+  --color-topbar-foreground: #111827;
+  --color-topbar-border: #f3f4f6;
 
   --spacing-sidebar: 16rem;
   --spacing-topbar: 3.5rem;
 
+  /* Semantic state: success */
+  --color-success: #16a34a;
+  --color-success-strong: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-success-foreground: #166534;
+
+  /* Semantic state: danger */
+  --color-danger: #dc2626;
+  --color-danger-strong: #b91c1c;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-danger-foreground: #991b1b;
+
+  /* Semantic state: warning */
+  --color-warning: #d97706;
+  --color-warning-strong: #b45309;
+  --color-warning-bg: #fefce8;
+  --color-warning-border: #fef08a;
+  --color-warning-foreground: #854d0e;
+
+  /* Semantic state: info */
+  --color-info: #2563eb;
+  --color-info-strong: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+  --color-info-foreground: #1e40af;
+
   --font-sans: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-serif: "Adamina", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-arial: "Arial", sans-serif;
 }
 
 html {
@@ -44,8 +105,8 @@ html {
 }
 
 body {
-  color: var(--color-gray-900);
-  background-color: var(--color-gray-50);
+  color: var(--color-foreground);
+  background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -78,4 +139,13 @@ body {
   background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -47,10 +47,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = memo(
         )}
         aria-hidden={!isOpen}
       >
-        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+        <div className="absolute inset-0 bg-scrim/50" onClick={onClose} />
         <aside
           className={classNames(
-            'absolute inset-y-0 left-0 flex w-[78%] max-w-xs flex-col overflow-y-auto rounded-r-2xl bg-white shadow-xl transition-transform duration-300',
+            'absolute inset-y-0 left-0 flex w-[78%] max-w-xs flex-col overflow-y-auto rounded-r-2xl bg-surface shadow-xl transition-transform duration-300',
             isOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >

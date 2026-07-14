@@ -11,7 +11,7 @@ const AdminLayout: React.FC = memo(() => {
     <div className="min-h-screen">
       <AdminSidebar isOpen={open} onClose={close} />
       <AdminTopbar onMenu={toggle} />
-      <main className="pt-topbar md:pl-sidebar p-4 md:p-6 min-h-screen overflow-auto bg-gray-50">
+      <main className="pt-[80px]! md:pl-[290px] p-4 md:p-6 min-h-screen overflow-auto bg-white">
         <Outlet />
       </main>
     </div>

@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, Menu, Search, ShoppingCart } from '@assets/icons';
 import { classNames } from '@utils/helpers';
 
@@ -7,29 +8,32 @@ export type AdminTopbarProps = { onMenu: () => void };
 type FulfillmentMode = 'delivery' | 'pickup';
 
 const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
+    const navigate = useNavigate();
     const [mode, setMode] = useState<FulfillmentMode>('delivery');
 
     const pillClass = useCallback(
         (active: boolean) =>
             classNames(
                 'rounded-full border px-4 py-1.5 text-sm font-medium transition-colors',
-                active ? 'border-gray-900 bg-gray-900 text-white' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                active
+                    ? 'border-foreground bg-foreground text-inverse-foreground'
+                    : 'border-border-strong text-muted-foreground hover:border-foreground/40'
             ),
         []
     );
 
     return (
-        <div className="fixed top-0 left-0 md:left-sidebar right-0 h-topbar bg-topbar  flex items-center gap-4 px-4 md:px-6 z-30">
-            <button className="shrink-0 text-gray-600 md:hidden" onClick={onMenu} aria-label="Open sidebar">
+        <div className="fixed top-0 left-0 md:left-sidebar right-0 h-topbar bg-topbar text-topbar-foreground flex items-center gap-4 px-4 md:px-6 z-30">
+            <button className="shrink-0 text-muted-foreground md:hidden" onClick={onMenu} aria-label="Open sidebar">
                 <Menu size={20} />
             </button>
 
             <div className="relative w-full">
-                <Search size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-subtle-foreground" />
                 <input
                     type="search"
                     placeholder="Search for products..."
-                    className="w-full rounded-full bg-gray-100 py-2.5 pl-10 pr-4 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    className="w-full rounded-full bg-surface-muted py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-subtle-foreground focus:outline-none focus:ring-2 focus:ring-primary-200"
                 />
             </div>
 
@@ -42,10 +46,15 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
                         Pickup
                     </button>
                 </div>
-                <button type="button" className="text-gray-700 hover:text-gray-900" aria-label="Notifications">
+                <button type="button" className="text-muted-foreground hover:text-foreground" aria-label="Notifications">
                     <Bell size={20} />
                 </button>
-                <button type="button" className="text-gray-900 hover:text-gray-700" aria-label="Cart">
+                 <button 
+                    type="button" 
+                    className="text-foreground hover:text-muted-foreground cursor-pointer" 
+                    aria-label="Cart"
+                    onClick={() => navigate('/admin/cart')}
+                >
                     <ShoppingCart size={20} />
                 </button>
             </div>

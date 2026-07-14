@@ -2,6 +2,7 @@ import React, { lazy } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import PublicLayout from "@layouts/PublicLayout";
 import AdminLayout from "@layouts/AdminLayout";
+import AuthLayout from "@layouts/AuthLayout";
 import ProtectedRoute from "@pages/Layout/ProtectedRoute";
 
 const HomePage = lazy(() => import("@pages/Public/HomePage"));
@@ -14,6 +15,9 @@ const AdminDashboard = lazy(() => import("@pages/Admin/Dashboard"));
 const AdminUsers = lazy(() => import("@pages/Admin/Users"));
 const NotFound = lazy(() => import("@pages/404"));
 const Unauth = lazy(() => import("@pages/Unauth"));
+const ProductDetailPage = lazy(() => import("@pages/Admin/ProductDetailPage"));
+const CartPage = lazy(() => import("@pages/Admin/CartPage"));
+const CheckoutPage = lazy(() => import("@pages/Admin/CheckoutPage"));
 
 const routes: RouteObject[] = [
   {
@@ -23,10 +27,15 @@ const routes: RouteObject[] = [
       { path: "/about", element: <AboutPage /> },
       { path: "/contact", element: <ContactPage /> },
 
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
       { path: "/unauth", element: <Unauth /> },
       { path: "/404", element: <NotFound /> },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
     ],
   },
   {
@@ -37,12 +46,18 @@ const routes: RouteObject[] = [
         children: [
           { path: "/admin", element: <AdminDashboard /> },
           { path: "/admin/users", element: <AdminUsers /> },
+          { path: "/admin/cart", element: <CartPage /> },
+          { path: "/admin/checkout", element: <CheckoutPage /> },
           { path: "/brand", element: <ComingSoonPage title="Brand" /> },
           { path: "/shop", element: <ComingSoonPage title="Shop" /> },
           { path: "/on-sale", element: <ComingSoonPage title="On Sale" /> },
           {
             path: "/new-arrival",
             element: <ComingSoonPage title="New Arrival" />,
+          },
+          {
+            path: "/admin/product/:id",
+            element: <ProductDetailPage />
           },
         ],
       },

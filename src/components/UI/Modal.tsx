@@ -17,15 +17,15 @@ const Modal: React.FC<Props> = ({ title, isOpen, onClose, children, footer, size
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className={classNames('relative bg-white w-full mx-4 rounded-lg shadow', sizes[size], customClass)}>
+      <div className="absolute inset-0 bg-scrim/40" onClick={onClose} />
+      <div className={classNames('relative bg-surface text-surface-foreground w-full mx-4 rounded-lg shadow', sizes[size], customClass)}>
         {title ? (
-          <div className="p-4 border-b">
+          <div className="p-4 border-b border-border">
             <h3 className="text-lg font-semibold">{title}</h3>
           </div>
         ) : null}
         <div className="p-4">{children}</div>
-        {footer ? <div className="p-4 border-t">{footer}</div> : null}
+        {footer ? <div className="p-4 border-t border-border">{footer}</div> : null}
       </div>
     </div>
   );

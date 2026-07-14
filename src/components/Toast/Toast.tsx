@@ -15,24 +15,24 @@ type ToastProps = {
 
 const variantStyles: Record<ToastVariant, { bg: string; icon: React.ReactNode; border: string }> = {
   success: {
-    bg: 'bg-green-50 dark:bg-green-900/20',
-    icon: <CheckCircle2 className="text-green-600 dark:text-green-400" size={20} />,
-    border: 'border-green-200 dark:border-green-800'
+    bg: 'bg-success-bg dark:bg-green-900/20',
+    icon: <CheckCircle2 className="text-success dark:text-green-400" size={20} />,
+    border: 'border-success-border dark:border-green-800'
   },
   error: {
-    bg: 'bg-red-50 dark:bg-red-900/20',
-    icon: <AlertCircle className="text-red-600 dark:text-red-400" size={20} />,
-    border: 'border-red-200 dark:border-red-800'
+    bg: 'bg-danger-bg dark:bg-red-900/20',
+    icon: <AlertCircle className="text-danger dark:text-red-400" size={20} />,
+    border: 'border-danger-border dark:border-red-800'
   },
   info: {
-    bg: 'bg-blue-50 dark:bg-blue-900/20',
-    icon: <Info className="text-blue-600 dark:text-blue-400" size={20} />,
-    border: 'border-blue-200 dark:border-blue-800'
+    bg: 'bg-info-bg dark:bg-blue-900/20',
+    icon: <Info className="text-info dark:text-blue-400" size={20} />,
+    border: 'border-info-border dark:border-blue-800'
   },
   warning: {
-    bg: 'bg-yellow-50 dark:bg-yellow-900/20',
-    icon: <AlertTriangle className="text-yellow-600 dark:text-yellow-400" size={20} />,
-    border: 'border-yellow-200 dark:border-yellow-800'
+    bg: 'bg-warning-bg dark:bg-yellow-900/20',
+    icon: <AlertTriangle className="text-warning dark:text-yellow-400" size={20} />,
+    border: 'border-warning-border dark:border-yellow-800'
   }
 };
 
@@ -65,10 +65,10 @@ const Toast: React.FC<ToastProps> = ({
       role="alert"
     >
       <div className="shrink-0">{styles.icon}</div>
-      <p className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100">{message}</p>
+      <p className="flex-1 text-sm font-medium text-foreground dark:text-gray-100">{message}</p>
       <button
         onClick={() => onClose(id)}
-        className="shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+        className="shrink-0 text-subtle-foreground hover:text-muted-foreground dark:hover:text-gray-300 transition-colors"
         aria-label="Close"
       >
         <X size={18} />

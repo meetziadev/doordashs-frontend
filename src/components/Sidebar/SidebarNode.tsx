@@ -9,24 +9,24 @@ const INDENT_STEP_REM = 0.75;
 
 const THEME = {
   light: {
-    text: 'text-gray-900',
-    subtext: 'text-gray-700',
-    border: 'border-gray-100',
-    chevron: 'text-gray-400',
-    checkboxBorder: 'border-gray-300',
-    checkboxChecked: 'border-gray-900 bg-gray-900',
+    text: 'text-foreground',
+    subtext: 'text-muted-foreground',
+    border: 'border-border',
+    chevron: 'text-subtle-foreground',
+    checkboxBorder: 'border-border-strong',
+    checkboxChecked: 'border-foreground bg-foreground',
     linkHover: '',
     linkActive: ''
   },
   dark: {
-    text: 'text-white',
-    subtext: 'text-white/80',
-    border: 'border-white/10',
-    chevron: 'text-white/50',
-    checkboxBorder: 'border-white/30',
-    checkboxChecked: 'border-white bg-white/20',
-    linkHover: 'hover:bg-white/10',
-    linkActive: 'bg-white/15'
+    text: 'text-inverse-foreground',
+    subtext: 'text-inverse-foreground/80',
+    border: 'border-inverse-foreground/10',
+    chevron: 'text-inverse-foreground/50',
+    checkboxBorder: 'border-inverse-foreground/30',
+    checkboxChecked: 'border-inverse-foreground bg-inverse-foreground/20',
+    linkHover: 'hover:bg-inverse-foreground/10',
+    linkActive: 'bg-inverse-foreground/15'
   }
 } as const;
 
@@ -66,7 +66,7 @@ const SidebarNode: React.FC<SidebarNodeProps> = memo(
               )}
             />
             {checked && (
-              <Check size={13} strokeWidth={3} className="pointer-events-none absolute inset-0 m-auto text-white" />
+              <Check size={13} strokeWidth={3} className="pointer-events-none absolute inset-0 m-auto text-inverse-foreground" />
             )}
           </span>
           <span className={classNames('text-[15px]', theme.subtext)}>{item.label}</span>
@@ -147,7 +147,7 @@ const SidebarNode: React.FC<SidebarNodeProps> = memo(
       const darkLinkClass = (active: boolean) =>
         classNames(
           'flex items-center gap-2 rounded px-3 py-2 text-sm transition-colors',
-          active ? theme.linkActive + ' text-white' : 'text-white/90 ' + theme.linkHover
+          active ? classNames(theme.linkActive, 'text-inverse-foreground') : classNames('text-inverse-foreground/90', theme.linkHover)
         );
 
       if (item.href) {

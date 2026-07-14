@@ -23,13 +23,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
     return (
         <aside
             className={
-                `fixed inset-y-0 left-0 w-sidebar bg-white text-gray-900 flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl md:shadow-none ` +
+                `fixed inset-y-0 left-0 w-sidebar bg-white text-sidebar-foreground flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl ` +
                 (isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
             }
         >
             <div className="p-4">
                 <h2 className="text-xl font-semibold "></h2>
-                <p className="text-xs text-gray-500 mt-1 "></p>
+                <p className="text-xs text-muted-foreground mt-1 "></p>
             </div>
             <nav className="flex-1 overflow-y-auto">
                 {DEFAULT_SIDEBAR_ITEMS.map((item) => (
@@ -46,16 +46,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
                     />
                 ))}
             </nav>
-            {/* <div className="p-4 border-t border-gray-100">
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="h-8 w-8 rounded-full bg-gray-200" />
-                    <div className="text-sm">
-                        <div className="font-medium">{user?.name || 'User'}</div>
-                        <div className="text-gray-500">{user?.email || 'user@example.com'}</div>
-                    </div>
-                </div>
-                <button onClick={logout} className="w-full text-left text-red-600 hover:text-red-700 text-sm">Logout</button>
-            </div> */}
+
         </aside>
     );
 });

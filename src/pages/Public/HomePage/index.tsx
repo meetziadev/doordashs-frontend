@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card } from '@components';
+import { Button, Card } from '@/components';
 
 const HomePage: React.FC = () => (
   <div className="max-w-6xl mx-auto p-6 space-y-6">
@@ -12,4 +12,3 @@ const HomePage: React.FC = () => (
 );
 
 export default HomePage;
-
