@@ -18,6 +18,8 @@ const Unauth = lazy(() => import("@pages/Unauth"));
 const ProductDetailPage = lazy(() => import("@pages/Admin/ProductDetailPage"));
 const CartPage = lazy(() => import("@pages/Admin/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/Admin/CheckoutPage"));
+import ProfilePage from "@pages/Admin/ProfilePage";
+import OrdersPage from "@pages/Admin/OrdersPage";
 
 const routes: RouteObject[] = [
   {
@@ -48,6 +50,8 @@ const routes: RouteObject[] = [
           { path: "/admin/users", element: <AdminUsers /> },
           { path: "/admin/cart", element: <CartPage /> },
           { path: "/admin/checkout", element: <CheckoutPage /> },
+          { path: "/admin/profile", element: <ProfilePage /> },
+          { path: "/admin/orders", element: <OrdersPage /> },
           { path: "/brand", element: <ComingSoonPage title="Brand" /> },
           { path: "/shop", element: <ComingSoonPage title="Shop" /> },
           { path: "/on-sale", element: <ComingSoonPage title="On Sale" /> },

@@ -13,6 +13,7 @@ const BRAND_OPTIONS: SidebarItem[] = [
 
 export const DEFAULT_SIDEBAR_ITEMS: SidebarItem[] = [
   { id: 'home', label: 'Home', type: 'link', href: '/admin' },
+  { id: 'orders', label: 'Orders', type: 'link', href: '/admin/orders' },
   { id: 'brand', label: 'Brand', type: 'group', href: '/brand', defaultOpen: true, children: BRAND_OPTIONS },
   { id: 'shop', label: 'Shop', type: 'link', href: '/shop' },
   { id: 'on-sale', label: 'On Sale', type: 'link', href: '/on-sale' },
