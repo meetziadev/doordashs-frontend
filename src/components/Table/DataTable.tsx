@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import DataTableLib from 'react-data-table-component';
 import { classNames } from '@utils/helpers';
 import { TableColumn } from '@/types';
+import Loader from '../UI/Loader';
 
 type Props<T = any> = {
   columns: TableColumn<T>[];
@@ -72,7 +73,9 @@ const DataTable = <T extends Record<string, any> = any>({
         columns={columns}
         data={data}
         progressPending={loading}
+        progressComponent={<Loader size="md" text="Loading data..." />}
         pagination={pagination}
+
         paginationPerPage={paginationPerPage}
         paginationRowsPerPageOptions={[10, 20, 30, 50]}
         subHeader={searchable}

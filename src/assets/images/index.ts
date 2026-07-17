@@ -17,3 +17,16 @@ export { default as categoryTees } from './category_tees.png';
 export { default as categoryPants } from './category_pants.png';
 export { default as loginBg } from './login.webp';
 export { default as authIllustration } from './auth_illustration.png';
+export { default as bannerOne } from './bannerOne.png';
+export { default as bannerTwo } from './bannerTwo.png';
+export { default as everythingDelivered } from './everything_delivered.png';
+export { default as styledDelivered } from './styled_delivered.png';
+export { default as premiumStyleBanner } from './premium_style_banner.png';
+export { default as arrivesInStyle } from './arrives_in_style.png';
+export { default as collectionWomen } from './collection_women.png';
+export { default as collectionMen } from './collection_men.png';
+
+
+
+
+

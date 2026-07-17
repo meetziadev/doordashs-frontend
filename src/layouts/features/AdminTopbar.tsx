@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Menu, Search, ShoppingCart } from '@assets/icons';
+import { Bell, Menu, Search, ShoppingCart, User } from '@assets/icons';
 import { classNames } from '@utils/helpers';
 
 export type AdminTopbarProps = { onMenu: () => void };
@@ -56,6 +56,14 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
                     onClick={() => navigate('/admin/cart')}
                 >
                     <ShoppingCart size={20} />
+                </button>
+                 <button 
+                    type="button" 
+                    className="text-foreground hover:text-muted-foreground cursor-pointer" 
+                    aria-label="Profile"
+                    onClick={() => navigate('/admin/profile')}
+                >
+                    <User size={20} />
                 </button>
             </div>
         </div>
