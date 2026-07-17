@@ -1,7 +1,20 @@
 export * from './UI/Button';
 export { default as Card } from './UI/Card';
 export { default as Modal } from './UI/Modal';
+export { default as FeaturesSection } from './UI/FeaturesSection';
+export { default as EverythingDeliveredSection } from './UI/EverythingDeliveredSection';
+export { default as StyledDeliveredSection } from './UI/StyledDeliveredSection';
+export { default as PremiumStyleBannerSection } from './UI/PremiumStyleBannerSection';
+export { default as ArrivesInStyleSection } from './UI/ArrivesInStyleSection';
+export { default as CompleteWardrobeSection } from './UI/CompleteWardrobeSection';
+export { default as Loader } from './UI/Loader';
 export { default as Badge } from './UI/Badge';
+
+
+
+
+
+
 export { default as Alert } from './UI/Alert';
 export { default as CollectionSection } from './UI/CollectionSection';
 export { default as ProductCard } from './UI/ProductCard';
