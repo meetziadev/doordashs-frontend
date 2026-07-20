@@ -1,4 +1,6 @@
 import { splitApi } from '@/redux/api/splitApi';
+import { extractApiData } from '@/utils/authUtils';
+import type { ChangePasswordDto, UpdateProfileDto, UserProfile } from '@/types/profile';
 
 type SendVerificationDto = {
   identifier?: string;
@@ -51,8 +53,24 @@ export const authService = splitApi.injectEndpoints({
         body: credentials
       })
     }),
-    getProfile: builder.query<unknown, void>({
-      query: () => ({ url: 'auth/me' })
+    getProfile: builder.query<UserProfile, void>({
+      query: () => ({ url: 'auth/me' }),
+      transformResponse: (response: unknown) => extractApiData<UserProfile>(response) as UserProfile
+    }),
+    updateProfile: builder.mutation<UserProfile, UpdateProfileDto>({
+      query: (body) => ({
+        url: 'auth/me',
+        method: 'PATCH',
+        body
+      }),
+      transformResponse: (response: unknown) => extractApiData<UserProfile>(response) as UserProfile
+    }),
+    changePassword: builder.mutation<unknown, ChangePasswordDto>({
+      query: (body) => ({
+        url: 'auth/change-password',
+        method: 'POST',
+        body
+      })
     }),
     logout: builder.mutation<unknown, void>({
       query: () => ({
@@ -70,5 +88,7 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useGetProfileQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation
 } = authService;

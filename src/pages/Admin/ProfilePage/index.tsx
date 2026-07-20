@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { StylesConfig } from 'react-select';
@@ -8,7 +8,17 @@ import ProfileHeaderCard from '@/components/UI/ProfileHeaderCard';
 import ProfileFormGroup from '@/components/UI/ProfileFormGroup';
 import FormInput from '@/components/Form/FormInput';
 import FormSelect from '@/components/Form/FormSelect';
-import { useLogoutMutation } from '@services/authService';
+import {
+  useChangePasswordMutation,
+  useGetProfileQuery,
+  useLogoutMutation,
+  useUpdateProfileMutation
+} from '@services/authService';
+import {
+  useCreateAddressMutation,
+  useGetAddressesQuery,
+  useUpdateAddressMutation
+} from '@services/addressService';
 import { userLogout } from '@redux/slices/authSlice';
 import { clearAccessTokenCookie } from '@utils/cookieUtils';
 import { getApiErrorMessage } from '@utils/authUtils';
@@ -18,18 +28,6 @@ const genderOptions = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
   { value: 'other', label: 'Other' }
-];
-
-const countryOptions = [
-  { value: 'in', label: 'India' },
-  { value: 'us', label: 'United States' },
-  { value: 'uk', label: 'United Kingdom' }
-];
-
-const cityOptions = [
-  { value: 'delhi', label: 'Delhi' },
-  { value: 'mumbai', label: 'Mumbai' },
-  { value: 'newyork', label: 'New York' }
 ];
 
 const customSelectStyles: StylesConfig<any, boolean> = {
@@ -48,7 +46,7 @@ const customSelectStyles: StylesConfig<any, boolean> = {
   }),
   valueContainer: (base) => ({
     ...base,
-    padding: '0 16px',
+    padding: '0 16px'
   }),
   placeholder: (base) => ({
     ...base,
@@ -99,11 +97,33 @@ const customSelectStyles: StylesConfig<any, boolean> = {
   })
 };
 
+const buildFullAddress = (address: {
+  street: string;
+  city: string;
+  province: string;
+  country: string;
+  postalCode: string;
+}) =>
+  [address.street, address.city, address.province, address.country, address.postalCode]
+    .filter(Boolean)
+    .join(', ');
+
 export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const personalInfoRef = useRef<HTMLDivElement>(null);
   const { error: showError, success: showSuccess } = useToastContext();
+
+  const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery();
+  const { data: addresses = [], isLoading: isAddressesLoading } = useGetAddressesQuery();
+
+  const [updateProfile, { isLoading: isUpdatingProfile }] = useUpdateProfileMutation();
+  const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
+  const [createAddress, { isLoading: isCreatingAddress }] = useCreateAddressMutation();
+  const [updateAddress, { isLoading: isUpdatingAddress }] = useUpdateAddressMutation();
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+  const [addressId, setAddressId] = useState<string | null>(null);
 
   const [personalInfo, setPersonalInfo] = useState({
     fullName: '',
@@ -127,6 +147,35 @@ export const ProfilePage: React.FC = () => {
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    if (!profile) return;
+
+    setPersonalInfo({
+      fullName: profile.full_name || '',
+      email: profile.email || '',
+      phone: profile.phone || '',
+      dob: profile.date_of_birth || '',
+      gender: profile.gender || ''
+    });
+  }, [profile]);
+
+  useEffect(() => {
+    if (!addresses.length) {
+      setAddressId(null);
+      return;
+    }
+
+    const defaultAddress = addresses.find((address) => address.is_default) || addresses[0];
+    setAddressId(defaultAddress.id);
+    setShippingAddress({
+      country: defaultAddress.country || '',
+      city: defaultAddress.city || '',
+      province: defaultAddress.province || '',
+      street: defaultAddress.street || '',
+      postalCode: defaultAddress.postal_code || ''
+    });
+  }, [addresses]);
+
   const handlePersonalInfoChange = (field: keyof typeof personalInfo, value: string) => {
     setPersonalInfo((prev) => ({ ...prev, [field]: value }));
   };
@@ -137,6 +186,62 @@ export const ProfilePage: React.FC = () => {
 
   const handlePasswordsChange = (field: keyof typeof passwords, value: string) => {
     setPasswords((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      await updateProfile({
+        full_name: personalInfo.fullName.trim(),
+        date_of_birth: personalInfo.dob || null,
+        gender: (personalInfo.gender as 'male' | 'female' | 'other') || null
+      }).unwrap();
+      showSuccess('Profile updated successfully');
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Failed to update profile'));
+    }
+  };
+
+  const handleSaveAddress = async () => {
+    const payload = {
+      label: 'Home',
+      full_address: buildFullAddress(shippingAddress),
+      street: shippingAddress.street.trim(),
+      city: shippingAddress.city.trim(),
+      province: shippingAddress.province.trim(),
+      country: shippingAddress.country.trim(),
+      postal_code: shippingAddress.postalCode.trim(),
+      is_default: true
+    };
+
+    try {
+      if (addressId) {
+        await updateAddress({ id: addressId, body: payload }).unwrap();
+      } else {
+        await createAddress(payload).unwrap();
+      }
+      showSuccess('Shipping address saved successfully');
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Failed to save shipping address'));
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      showError('New passwords do not match');
+      return;
+    }
+
+    try {
+      await changePassword({
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword
+      }).unwrap();
+
+      setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      showSuccess('Password updated successfully');
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Failed to update password'));
+    }
   };
 
   const handleLogout = async () => {
@@ -153,109 +258,144 @@ export const ProfilePage: React.FC = () => {
     navigate('/login');
   };
 
+  const scrollToPersonalInfo = () => {
+    personalInfoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const breadcrumbItems = [
     { label: 'Home', url: '/admin' },
     { label: 'Profile' }
   ];
 
-  const defaultInputClass = "w-full border border-gray-200 bg-white rounded-[8px] px-4 py-3 text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-black transition-all text-[15px]";
-  const iconInputClass = "w-full border border-gray-200 bg-white rounded-[8px] pl-4 pr-12 py-3 text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-black transition-all text-[15px]";
+  const defaultInputClass =
+    'w-full border border-gray-200 bg-white rounded-[8px] px-4 py-3 text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-black transition-all text-[15px]';
+  const readOnlyInputClass =
+    'w-full border border-gray-200 bg-gray-100 rounded-[8px] px-4 py-3 text-gray-600 cursor-not-allowed text-[15px]';
+  const iconInputClass =
+    'w-full border border-gray-200 bg-white rounded-[8px] pl-4 pr-12 py-3 text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-black transition-all text-[15px]';
+
+  const isLoading = isProfileLoading || isAddressesLoading;
+  const isSavingAddress = isCreatingAddress || isUpdatingAddress;
+
+  if (isLoading) {
+    return (
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto p-6 bg-white font-arial">
+        <p className="text-gray-500">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto p-2 md:p-4 lg:p-6 space-y-8 bg-white font-arial">
-      {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
 
-      {/* Header text */}
       <div className="text-left space-y-2">
-        <h1 className="font-serif text-[26px] md:text-[36px] font-regular text-black">
-          Profile
-        </h1>
+        <h1 className="font-serif text-[26px] md:text-[36px] font-regular text-black">Profile</h1>
         <p className="text-sm sm:text-base text-gray-900 font-medium">
           Manage your personal information, address and security setting.
         </p>
       </div>
 
       <div className="space-y-6 mt-6">
-        {/* Profile Card Header */}
         <ProfileHeaderCard
-          name="Ahmad"
-          email="ahmad@gmail.com"
-          phone="000-000-000"
-          onEdit={() => console.log('Edit profile clicked')}
+          name={personalInfo.fullName || '—'}
+          email={personalInfo.email || '—'}
+          phone={personalInfo.phone || '—'}
+          onEdit={scrollToPersonalInfo}
         />
 
-        {/* 1. Personal Information */}
-        <ProfileFormGroup title="Personal Information">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <FormInput
-              name="fullName"
-              placeholder="Full Name"
-              value={personalInfo.fullName}
-              inputClassName={defaultInputClass}
-              onChange={(e) => handlePersonalInfoChange('fullName', e.target.value)}
-            />
-            <FormInput
-              name="emailAddress"
-              type="email"
-              placeholder="Email Address"
-              value={personalInfo.email}
-              inputClassName={defaultInputClass}
-              onChange={(e) => handlePersonalInfoChange('email', e.target.value)}
-            />
-            <FormInput
-              name="phoneNumber"
-              type="tel"
-              placeholder="Phone Number"
-              value={personalInfo.phone}
-              inputClassName={defaultInputClass}
-              onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
-            />
-          </div>
+        <div ref={personalInfoRef} id="personal-info">
+          <ProfileFormGroup title="Personal Information">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <FormInput
+                label="Full Name"
+                name="fullName"
+                placeholder="Full Name"
+                value={personalInfo.fullName}
+                inputClassName={defaultInputClass}
+                onChange={(e) => handlePersonalInfoChange('fullName', e.target.value)}
+              />
+              <FormInput
+                label="Email Address"
+                name="emailAddress"
+                type="email"
+                placeholder="Email Address"
+                value={personalInfo.email}
+                readOnly
+                inputClassName={readOnlyInputClass}
+              />
+              <FormInput
+                label="Phone Number"
+                name="phoneNumber"
+                type="tel"
+                placeholder="Phone Number"
+                value={personalInfo.phone}
+                readOnly
+                inputClassName={readOnlyInputClass}
+              />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <FormInput
-              name="dob"
-              placeholder="Date of Birth"
-              value={personalInfo.dob}
-              inputClassName={iconInputClass}
-              onChange={(e) => handlePersonalInfoChange('dob', e.target.value)}
-              rightIcon={<Calendar size={18} />}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <FormInput
+                label="Date of Birth"
+                name="dob"
+                type="date"
+                value={personalInfo.dob}
+                inputClassName={iconInputClass}
+                onChange={(e) => handlePersonalInfoChange('dob', e.target.value)}
+                rightIcon={<Calendar size={18} />}
+              />
 
-            <FormSelect
-              name="gender"
-              placeholder="Gender"
-              options={genderOptions}
-              value={genderOptions.find(opt => opt.value === personalInfo.gender) || null}
-              onChange={(e: any) => handlePersonalInfoChange('gender', e?.target?.value?.value || '')}
-              stylesOverride={customSelectStyles}
-            />
-          </div>
-        </ProfileFormGroup>
+              <FormSelect
+                label="Gender"
+                name="gender"
+                placeholder="Gender"
+                options={genderOptions}
+                value={genderOptions.find((opt) => opt.value === personalInfo.gender) || null}
+                onChange={(e: any) =>
+                  handlePersonalInfoChange('gender', e?.target?.value?.value || '')
+                }
+                stylesOverride={customSelectStyles}
+              />
+            </div>
 
-        {/* 2. Shipping Address */}
+            <p className="text-xs text-gray-500">
+              Email and phone are locked after verification and cannot be changed here.
+            </p>
+
+            <div className="flex justify-end w-full">
+              <button
+                type="button"
+                onClick={handleSaveProfile}
+                disabled={isUpdatingProfile}
+                className="bg-black hover:bg-zinc-800 text-white px-8 py-3 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm disabled:opacity-60"
+              >
+                {isUpdatingProfile ? 'Saving...' : 'Save Profile'}
+              </button>
+            </div>
+          </ProfileFormGroup>
+        </div>
+
         <ProfileFormGroup title="Shipping Address">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <FormSelect
+            <FormInput
+              label="Country"
               name="country"
               placeholder="Country"
-              options={countryOptions}
-              value={countryOptions.find(opt => opt.value === shippingAddress.country) || null}
-              onChange={(e: any) => handleShippingAddressChange('country', e?.target?.value?.value || '')}
-              stylesOverride={customSelectStyles}
+              value={shippingAddress.country}
+              inputClassName={defaultInputClass}
+              onChange={(e) => handleShippingAddressChange('country', e.target.value)}
             />
-
-            <FormSelect
+            <FormInput
+              label="City"
               name="city"
               placeholder="City"
-              options={cityOptions}
-              value={cityOptions.find(opt => opt.value === shippingAddress.city) || null}
-              onChange={(e: any) => handleShippingAddressChange('city', e?.target?.value?.value || '')}
-              stylesOverride={customSelectStyles}
+              value={shippingAddress.city}
+              inputClassName={defaultInputClass}
+              onChange={(e) => handleShippingAddressChange('city', e.target.value)}
             />
-
             <FormInput
+              label="Province"
               name="province"
               placeholder="Province"
               value={shippingAddress.province}
@@ -266,6 +406,7 @@ export const ProfilePage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormInput
+              label="Street"
               name="street"
               placeholder="Street"
               value={shippingAddress.street}
@@ -273,6 +414,7 @@ export const ProfilePage: React.FC = () => {
               onChange={(e) => handleShippingAddressChange('street', e.target.value)}
             />
             <FormInput
+              label="Postal Code"
               name="postalCode"
               placeholder="Postal Code"
               value={shippingAddress.postalCode}
@@ -280,9 +422,19 @@ export const ProfilePage: React.FC = () => {
               onChange={(e) => handleShippingAddressChange('postalCode', e.target.value)}
             />
           </div>
+
+          <div className="flex justify-end w-full">
+            <button
+              type="button"
+              onClick={handleSaveAddress}
+              disabled={isSavingAddress}
+              className="bg-black hover:bg-zinc-800 text-white px-8 py-3 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm disabled:opacity-60"
+            >
+              {isSavingAddress ? 'Saving...' : 'Save Address'}
+            </button>
+          </div>
         </ProfileFormGroup>
 
-        {/* 3. Chnage Password */}
         <ProfileFormGroup title="Change Password">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <FormInput
@@ -314,9 +466,11 @@ export const ProfilePage: React.FC = () => {
           <div className="flex justify-end w-full mt-4">
             <button
               type="button"
-              className="bg-black hover:bg-zinc-800 text-white px-8 py-3 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm"
+              onClick={handleChangePassword}
+              disabled={isChangingPassword}
+              className="bg-black hover:bg-zinc-800 text-white px-8 py-3 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm disabled:opacity-60"
             >
-              Update Password
+              {isChangingPassword ? 'Updating...' : 'Update Password'}
             </button>
           </div>
         </ProfileFormGroup>
