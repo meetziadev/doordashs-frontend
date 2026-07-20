@@ -1,22 +1,74 @@
 import { splitApi } from '@/redux/api/splitApi';
 
-type Credentials = { email: string; password: string };
-type RegisterDto = { name: string; email: string; password: string };
+type SendVerificationDto = {
+  identifier?: string;
+  session_token?: string;
+};
+
+type VerifyCodeDto = {
+  session_token: string;
+  code: string;
+};
+
+type RegisterDto = {
+  session_token: string;
+  full_name: string;
+  password: string;
+};
+
+type LoginDto = {
+  identifier: string;
+  password: string;
+};
 
 export const authService = splitApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<any, Credentials>({
-      query: (credentials) => ({ url: 'auth/signin', method: 'POST', body: credentials })
+    sendVerification: builder.mutation<unknown, SendVerificationDto>({
+      query: (body) => ({
+        url: 'auth/verification/send',
+        method: 'POST',
+        body
+      })
     }),
-    register: builder.mutation<any, RegisterDto>({
-      query: (data) => ({ url: 'auth/signup', method: 'POST', body: data })
+    verifyCode: builder.mutation<unknown, VerifyCodeDto>({
+      query: (body) => ({
+        url: 'auth/verification/verify',
+        method: 'POST',
+        body
+      })
     }),
-    getProfile: builder.query<any, void>({
+    register: builder.mutation<unknown, RegisterDto>({
+      query: (body) => ({
+        url: 'auth/register',
+        method: 'POST',
+        body
+      })
+    }),
+    login: builder.mutation<unknown, LoginDto>({
+      query: (credentials) => ({
+        url: 'auth/login',
+        method: 'POST',
+        body: credentials
+      })
+    }),
+    getProfile: builder.query<unknown, void>({
       query: () => ({ url: 'auth/me' })
+    }),
+    logout: builder.mutation<unknown, void>({
+      query: () => ({
+        url: 'auth/logout',
+        method: 'POST'
+      })
     })
   }),
   overrideExisting: false
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetProfileQuery } = authService;
-
+export const {
+  useSendVerificationMutation,
+  useVerifyCodeMutation,
+  useRegisterMutation,
+  useLoginMutation,
+  useGetProfileQuery,
+  useLogoutMutation
+} = authService;

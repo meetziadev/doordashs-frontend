@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { StylesConfig } from 'react-select';
 import { Calendar } from '@assets/icons';
 import Breadcrumbs from '@/components/UI/Breadcrumbs';
@@ -6,6 +8,11 @@ import ProfileHeaderCard from '@/components/UI/ProfileHeaderCard';
 import ProfileFormGroup from '@/components/UI/ProfileFormGroup';
 import FormInput from '@/components/Form/FormInput';
 import FormSelect from '@/components/Form/FormSelect';
+import { useLogoutMutation } from '@services/authService';
+import { userLogout } from '@redux/slices/authSlice';
+import { clearAccessTokenCookie } from '@utils/cookieUtils';
+import { getApiErrorMessage } from '@utils/authUtils';
+import { useToastContext } from '@components/Toast';
 
 const genderOptions = [
   { value: 'male', label: 'Male' },
@@ -93,6 +100,11 @@ const customSelectStyles: StylesConfig<any, boolean> = {
 };
 
 export const ProfilePage: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error: showError, success: showSuccess } = useToastContext();
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
   const [personalInfo, setPersonalInfo] = useState({
     fullName: '',
     email: '',
@@ -125,6 +137,20 @@ export const ProfilePage: React.FC = () => {
 
   const handlePasswordsChange = (field: keyof typeof passwords, value: string) => {
     setPasswords((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Logout failed'));
+      return;
+    }
+
+    clearAccessTokenCookie();
+    dispatch(userLogout());
+    showSuccess('Logged out successfully');
+    navigate('/login');
   };
 
   const breadcrumbItems = [
@@ -294,6 +320,17 @@ export const ProfilePage: React.FC = () => {
             </button>
           </div>
         </ProfileFormGroup>
+      </div>
+
+      <div className="flex justify-center pt-4 pb-8">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="w-full max-w-[320px] bg-black hover:bg-zinc-800 text-white px-8 py-3 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer disabled:opacity-60"
+        >
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
+        </button>
       </div>
     </div>
   );
