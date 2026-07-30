@@ -2,12 +2,16 @@ import React, { memo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, Menu, Search } from '@assets/icons';
 import { FilterSidebar } from '@/components/Sidebar';
+import { getSidebarItems } from '@/components/Sidebar/sidebarData';
 import { useModal } from '@/hooks/useModal';
+import { useGetBrandsQuery } from '@services/brandService';
 
 const PublicHeader: React.FC = memo(() => {
     const navigate = useNavigate();
     const go = useCallback((to: string) => () => navigate(to), [navigate]);
     const { isOpen, open, close } = useModal();
+    const { data: brands = [] } = useGetBrandsQuery();
+    const sidebarItems = getSidebarItems(brands);
 
     const handleBrandFilterChange = useCallback(
         (values: string[]) => {
@@ -33,7 +37,12 @@ const PublicHeader: React.FC = memo(() => {
                     <Link to="/login" className="text-blue-600">Login</Link>
                 </div>
             </div>
-            <FilterSidebar isOpen={isOpen} onClose={close} onCheckedChange={handleBrandFilterChange} />
+            <FilterSidebar
+                isOpen={isOpen}
+                onClose={close}
+                items={sidebarItems}
+                onCheckedChange={handleBrandFilterChange}
+            />
         </header>
     );
 });

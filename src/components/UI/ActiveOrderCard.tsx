@@ -17,6 +17,9 @@ export interface ActiveOrderCardProps {
   items: ActiveOrderItem[];
   totalPrice: string;
   isHighlighted?: boolean;
+  canCancel?: boolean;
+  isCancelling?: boolean;
+  onCancel?: () => void;
 }
 
 export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
@@ -26,9 +29,12 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
   status,
   items,
   totalPrice,
-  isHighlighted = false
+  isHighlighted = false,
+  canCancel = false,
+  isCancelling = false,
+  onCancel
 }) => {
-  const isConfirmed = status.toLowerCase() === 'confirmed';
+  const isConfirmed = status.toLowerCase() === 'confirmed' || status.toLowerCase() === 'brand confirmed';
 
   return (
     <div className="bg-white rounded-[12px] border border-gray-200 overflow-hidden text-left font-arial transition-all w-full">
@@ -80,12 +86,22 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
         </div>
 
         {/* Total Summary Block (on far right) */}
-        <div className="lg:pl-6 shrink-0 flex items-center justify-center lg:justify-start">
+        <div className="lg:pl-6 shrink-0 flex flex-col items-center justify-center lg:justify-start gap-3">
           <div className="bg-[#F3F4F6] rounded-[8px] p-4 text-left w-full sm:w-[160px]">
             <p className="text-[11px] font-bold text-gray-900">Total</p>
             <p className="text-[15px] font-bold text-black mt-1">{totalPrice}</p>
             <p className="text-[11px] text-gray-500 mt-0.5">{items.reduce((acc, curr) => acc + curr.qty, 0)} items</p>
           </div>
+          {canCancel && onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={isCancelling}
+              className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-60 cursor-pointer"
+            >
+              {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

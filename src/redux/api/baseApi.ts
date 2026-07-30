@@ -2,7 +2,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../store';
 import { getAccessTokenFromCookie } from '@/utils/cookieUtils';
 
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1/';
 
 export const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,

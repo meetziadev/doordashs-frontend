@@ -40,6 +40,7 @@ export type { QuantitySelectorProps } from './UI/QuantitySelector';
 export { default as CheckoutForm } from './UI/CheckoutForm';
 export { default as CheckoutSummary } from './UI/CheckoutSummary';
 export { default as CheckoutSuccess } from './UI/CheckoutSuccess';
+export { default as NotificationsDropdown } from './UI/NotificationsDropdown';
 export { default as ProfileHeaderCard } from './UI/ProfileHeaderCard';
 export type { ProfileHeaderCardProps } from './UI/ProfileHeaderCard';
 export { default as ProfileFormGroup } from './UI/ProfileFormGroup';

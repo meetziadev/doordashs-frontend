@@ -16,7 +16,7 @@ export const splitApi = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth as any,
     endpoints: () => ({}),
-    tagTypes: []
+    tagTypes: ['Addresses', 'Cart', 'Orders', 'Notifications']
 });
 
 

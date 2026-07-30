@@ -3,6 +3,7 @@ import React from 'react';
 interface CartItem {
   id: string;
   name: string;
+  brand?: string;
   size: string;
   color: string;
   price: number;
@@ -17,6 +18,8 @@ interface CheckoutSummaryProps {
   deliveryFee: number;
   total: number;
   onPlaceOrder?: () => void;
+  isSubmitting?: boolean;
+  disabled?: boolean;
 }
 
 export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
@@ -25,7 +28,9 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   discount,
   deliveryFee,
   total,
-  onPlaceOrder
+  onPlaceOrder,
+  isSubmitting = false,
+  disabled = false
 }) => {
   const formatPrice = (value: number) => {
     return `Rs ${value.toLocaleString('en-US')}`;
@@ -57,6 +62,11 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
                   {item.name}
                 </h4>
                 <div className="mt-1 text-xs text-gray-500 font-normal space-y-0.5">
+                  {item.brand ? (
+                    <p>
+                      Brand: <span className="text-gray-900">{item.brand}</span>
+                    </p>
+                  ) : null}
                   <p>Size: <span className="text-gray-900">{item.size}</span></p>
                   <p>Color: <span className="text-gray-900">{item.color}</span></p>
                   <p>Qty: <span className="text-gray-900">{item.quantity}</span></p>
@@ -78,10 +88,12 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           <span className="text-gray-500 font-normal">Sub Total</span>
           <span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span>
         </div>
-        <div className="flex justify-between text-sm sm:text-base font-medium">
-          <span className="text-gray-500 font-normal">Discount</span>
-          <span className="text-gray-900 font-semibold">{formatPrice(discount)}</span>
-        </div>
+        {discount > 0 && (
+          <div className="flex justify-between text-sm sm:text-base font-medium">
+            <span className="text-gray-500 font-normal">Discount</span>
+            <span className="text-gray-900 font-semibold">{formatPrice(discount)}</span>
+          </div>
+        )}
         <div className="flex justify-between text-sm sm:text-base font-medium">
           <span className="text-gray-500 font-normal">Delivery Free</span>
           <span className="text-gray-900 font-semibold">{formatPrice(deliveryFee)}</span>
@@ -96,9 +108,10 @@ export const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
       <button
         type="button"
         onClick={onPlaceOrder}
-        className="w-full bg-black hover:bg-zinc-800 text-white rounded-full py-3.5 text-center font-bold text-sm sm:text-base transition-all active:scale-98 cursor-pointer shadow-sm mt-2"
+        disabled={disabled || isSubmitting}
+        className="w-full bg-black hover:bg-zinc-800 text-white rounded-full py-3.5 text-center font-bold text-sm sm:text-base transition-all active:scale-98 cursor-pointer shadow-sm mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        Place Order
+        {isSubmitting ? 'Placing Order...' : 'Place Order'}
       </button>
     </div>
   );

@@ -16,6 +16,11 @@ const AdminUsers = lazy(() => import("@pages/Admin/Users"));
 const NotFound = lazy(() => import("@pages/404"));
 const Unauth = lazy(() => import("@pages/Unauth"));
 const ProductDetailPage = lazy(() => import("@pages/Admin/ProductDetailPage"));
+const CategoryPage = lazy(() => import("@pages/Admin/CategoryPage"));
+const BrandPage = lazy(() => import("@pages/Admin/BrandPage"));
+const ShopPage = lazy(() => import("@pages/Admin/ShopPage"));
+const OnSalePage = lazy(() => import("@pages/Admin/OnSalePage"));
+const NewArrivalPage = lazy(() => import("@pages/Admin/NewArrivalPage"));
 const CartPage = lazy(() => import("@pages/Admin/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/Admin/CheckoutPage"));
 import ProfilePage from "@pages/Admin/ProfilePage";
@@ -53,15 +58,20 @@ const routes: RouteObject[] = [
           { path: "/admin/profile", element: <ProfilePage /> },
           { path: "/admin/orders", element: <OrdersPage /> },
           { path: "/brand", element: <ComingSoonPage title="Brand" /> },
-          { path: "/shop", element: <ComingSoonPage title="Shop" /> },
-          { path: "/on-sale", element: <ComingSoonPage title="On Sale" /> },
-          {
-            path: "/new-arrival",
-            element: <ComingSoonPage title="New Arrival" />,
-          },
+          { path: "/shop", element: <ShopPage /> },
+          { path: "/on-sale", element: <OnSalePage /> },
+          { path: "/new-arrival", element: <NewArrivalPage /> },
           {
             path: "/admin/product/:id",
             element: <ProductDetailPage />
+          },
+          {
+            path: "/admin/category/:slug",
+            element: <CategoryPage />
+          },
+          {
+            path: "/admin/brand/:slug",
+            element: <BrandPage />
           },
         ],
       },

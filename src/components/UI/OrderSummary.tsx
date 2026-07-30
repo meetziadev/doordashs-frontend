@@ -39,10 +39,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span>Subtotal</span>
           <span className="text-gray-950 font-regular">{formatPrice(subtotal)}</span>
         </div>
-        <div className="flex justify-between text-sm sm:text-base text-gray-500 font-medium">
-          <span>Discount (-20%)</span>
-          <span className="text-[#FF5A70] font-regular">-{formatPrice(discount)}</span>
-        </div>
+        {discount > 0 && (
+          <div className="flex justify-between text-sm sm:text-base text-gray-500 font-medium">
+            <span>Discount</span>
+            <span className="text-[#FF5A70] font-regular">-{formatPrice(discount)}</span>
+          </div>
+        )}
         <div className="flex justify-between text-sm sm:text-base text-gray-500 font-medium">
           <span>Delivery Fee</span>
           <span className="text-gray-950 font-regular">{formatPrice(deliveryFee)}</span>

@@ -21,7 +21,7 @@ const CategorySlideItem: React.FC<CategorySlideItemProps> = ({ image, label, onC
   <button
     type="button"
     onClick={onClick}
-    className={classNames('flex flex-col items-center gap-2 text-center', className)}
+    className={classNames('flex flex-col items-center gap-2 text-center cursor-pointer', className)}
   >
     <span className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-gray-100 ring-1 ring-gray-100 sm:h-20 sm:w-20 md:h-24 md:w-24">
       {image ? (
