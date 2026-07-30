@@ -5,6 +5,7 @@ import { classNames } from '@utils/helpers';
 
 export interface Product {
   id: string;
+  slug: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -38,7 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className, on
     if (onClick) {
       onClick();
     } else {
-      navigate(`/admin/product/${product.id}`);
+      navigate(`/admin/product/${product.slug}`);
     }
   };
 

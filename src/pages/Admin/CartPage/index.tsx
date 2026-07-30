@@ -1,90 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail } from '@assets/icons';
 import Breadcrumbs from '@/components/UI/Breadcrumbs';
 import CartItem from '@/components/UI/CartItem';
 import OrderSummary from '@/components/UI/OrderSummary';
-
-interface CartItem {
-  id: string;
-  name: string;
-  size: string;
-  color: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
+import {
+  useGetCartQuery,
+  useRemoveCartItemMutation,
+  useUpdateCartItemMutation
+} from '@services/cartService';
+import { useGetBrandsQuery } from '@services/brandService';
+import { mapCartItemsToView } from '@utils/cartUtils';
+import { getApiErrorMessage } from '@utils/authUtils';
+import { useToastContext } from '@components/Toast';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('doordash_cart');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        // ignore
-      }
-    }
-    return [
-      {
-        id: 'cart-1',
-        name: 'Gradient Graphic T-shirt',
-        size: 'Large',
-        color: 'White',
-        price: 3000,
-        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=300&h=400&fit=crop',
-        quantity: 1
-      },
-      {
-        id: 'cart-2',
-        name: 'Checkered Shirt',
-        size: 'Medium',
-        color: 'Red',
-        price: 3000,
-        image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=300&h=400&fit=crop',
-        quantity: 1
-      },
-      {
-        id: 'cart-3',
-        name: 'Skinny Fit Jeans',
-        size: 'Large',
-        color: 'Blue',
-        price: 3000,
-        image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=300&h=400&fit=crop',
-        quantity: 1
-      }
-    ];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('doordash_cart', JSON.stringify(items));
-  }, [items]);
-
+  const { error: showError } = useToastContext();
   const [promoCode, setPromoCode] = useState('');
 
-  const updateQuantity = (id: string, delta: number) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
+  const { data, isLoading, isError } = useGetCartQuery();
+  const { data: brands = [] } = useGetBrandsQuery();
+  const [updateCartItem] = useUpdateCartItemMutation();
+  const [removeCartItem] = useRemoveCartItemMutation();
+
+  const items = mapCartItemsToView(data?.items ?? [], brands);
+  const subtotal = data?.cart.subtotal ?? 0;
+  const deliveryFee = data?.cart.deliveryFee ?? 0;
+  const total = data?.cart.totalAmount ?? 0;
+
+  const updateQuantity = async (id: string, delta: number) => {
+    const item = items.find((cartItem) => cartItem.id === id);
+    if (!item) return;
+
+    const nextQuantity = item.quantity + delta;
+    if (nextQuantity <= 0) {
+      await handleRemove(id);
+      return;
+    }
+
+    try {
+      await updateCartItem({ id, body: { quantity: nextQuantity } }).unwrap();
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Failed to update quantity'));
+    }
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  // Pricing calculations
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const discount = Math.round(subtotal * 0.2); // 20% discount
-  const deliveryFee = subtotal > 0 ? 2500 : 0;
-  const total = subtotal - discount + deliveryFee;
-
-  const formatPrice = (value: number) => {
-    return `Rs ${value.toLocaleString('en-US')}`;
+  const handleRemove = async (id: string) => {
+    try {
+      await removeCartItem(id).unwrap();
+    } catch (error) {
+      showError(getApiErrorMessage(error, 'Failed to remove item'));
+    }
   };
 
   const breadcrumbItems = [
@@ -92,9 +59,31 @@ export const CartPage: React.FC = () => {
     { label: 'Cart' }
   ];
 
+  if (isLoading) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <p className="text-gray-500">Loading cart...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6 space-y-4">
+        <p className="text-gray-500">Unable to load cart. Please log in and try again.</p>
+        <button
+          type="button"
+          onClick={() => navigate('/login')}
+          className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-semibold cursor-pointer"
+        >
+          Go to Login
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto p-2 md:p-4 lg:p-6 space-y-12 bg-white font-arial">
-      {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
 
       <h1 className="font-serif text-[26px] md:text-[36px] font-regular text-black text-left">
@@ -102,11 +91,17 @@ export const CartPage: React.FC = () => {
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start mt-3 w-full">
-        {/* Left Column: Cart Items List */}
         <div className="flex-1 w-full space-y-6 bg-white">
           {items.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">
-              Your cart is empty.
+            <div className="py-12 text-center text-gray-500 space-y-4">
+              <p>Your cart is empty.</p>
+              <button
+                type="button"
+                onClick={() => navigate('/admin')}
+                className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-semibold cursor-pointer"
+              >
+                Continue Shopping
+              </button>
             </div>
           ) : (
             items.map((item, index) => (
@@ -114,34 +109,33 @@ export const CartPage: React.FC = () => {
                 key={item.id}
                 id={item.id}
                 name={item.name}
+                brand={item.brand}
                 size={item.size}
                 color={item.color}
                 price={item.price}
                 image={item.image}
                 quantity={item.quantity}
                 onQuantityChange={updateQuantity}
-                onRemove={removeItem}
+                onRemove={handleRemove}
                 isLast={index === items.length - 1}
               />
             ))
           )}
         </div>
 
-        {/* Right Column: Order Summary Card */}
         <OrderSummary
           subtotal={subtotal}
-          discount={discount}
+          discount={0}
           deliveryFee={deliveryFee}
           total={total}
           promoCode={promoCode}
           onPromoCodeChange={setPromoCode}
-          onApplyPromoCode={() => console.log('Promo code applied')}
+          onApplyPromoCode={() => showError('Promo codes are not available yet')}
           onCheckout={() => navigate('/admin/checkout')}
           checkoutDisabled={items.length === 0}
         />
       </div>
 
-      {/* Newsletter Signup Banner Section */}
       <div className="bg-black rounded-[20px] p-8 sm:p-12 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 mt-16 text-left">
         <h2 className="font-sans text-[20px] md:text-[40px] font-extrabold text-white max-w-xl tracking-wide leading-tight uppercase">
           Stay upto date about our latest offers

@@ -1,11 +1,13 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useAuth } from '@/hooks/useAuth';
 import { userLogout } from '@/redux/slices/authSlice';
 import SidebarNode from '@/components/Sidebar/SidebarNode';
-import { DEFAULT_SIDEBAR_ITEMS } from '@/components/Sidebar/sidebarData';
+import { getSidebarItems } from '@/components/Sidebar/sidebarData';
 import { useSidebarTree } from '@/components/Sidebar/useSidebarTree';
+import { flattenSidebarItems } from '@/components/Sidebar/utils';
+import { useGetBrandsQuery } from '@services/brandService';
 
 export type AdminSidebarProps = { isOpen: boolean; onClose: () => void };
 
@@ -13,7 +15,23 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
     const { role, user } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { openIds, checkedIds, toggleGroup, toggleCheckbox } = useSidebarTree(DEFAULT_SIDEBAR_ITEMS);
+    const { data: brands = [] } = useGetBrandsQuery();
+    const sidebarItems = useMemo(() => getSidebarItems(brands), [brands]);
+    const { openIds, checkedIds, toggleGroup, toggleCheckbox } = useSidebarTree(sidebarItems);
+    const flatItems = useMemo(() => flattenSidebarItems(sidebarItems), [sidebarItems]);
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        const values = Array.from(checkedIds).map((id) => flatItems.find((item) => item.id === id)?.value ?? id);
+        const params = new URLSearchParams();
+        if (values.length) params.set('brand', values.join(','));
+        navigate({ pathname: '/shop', search: params.toString() });
+    }, [checkedIds, flatItems, navigate]);
 
     const logout = useCallback(() => {
         dispatch(userLogout());
@@ -32,7 +50,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
                 <p className="text-xs text-muted-foreground mt-1 "></p>
             </div>
             <nav className="flex-1 overflow-y-auto">
-                {DEFAULT_SIDEBAR_ITEMS.map((item) => (
+                {sidebarItems.map((item) => (
                     <SidebarNode
                         key={item.id}
                         item={item}

@@ -5,6 +5,7 @@ import QuantitySelector from './QuantitySelector';
 export interface CartItemProps {
   id: string;
   name: string;
+  brand?: string;
   size: string;
   color: string;
   price: number;
@@ -18,6 +19,7 @@ export interface CartItemProps {
 export const CartItem: React.FC<CartItemProps> = ({
   id,
   name,
+  brand,
   size,
   color,
   price,
@@ -52,7 +54,14 @@ export const CartItem: React.FC<CartItemProps> = ({
             {name}
           </h3>
           <div className="mt-1 text-[14px] text-black font-normal">
-            <p>Size: <span className="text-gray-600">{size}</span></p>
+            {brand ? (
+              <p>
+                Brand: <span className="text-gray-600">{brand}</span>
+              </p>
+            ) : null}
+            <p className={brand ? 'mt-0.5' : undefined}>
+              Size: <span className="text-gray-600">{size}</span>
+            </p>
             <p className="mt-0.5">Color: <span className="text-gray-600">{color}</span></p>
           </div>
         </div>
