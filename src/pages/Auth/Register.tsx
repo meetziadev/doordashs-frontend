@@ -126,7 +126,7 @@ const Register: React.FC = () => {
       setAccessTokenCookie(accessToken);
       dispatch(loggedIn({ token: accessToken, user: null }));
       showSuccess('Account created successfully');
-      window.location.assign(BLIPSGO_ADMIN_URL);
+      navigate('/admin');
     } catch (error) {
       showError(getApiErrorMessage(error, 'Registration failed'));
     }
