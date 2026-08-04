@@ -13,6 +13,8 @@ import AuthShell from './AuthShell';
 const inputClassName =
   'w-full border border-gray-200 bg-[#F9FAFB] rounded-[6px] px-4 py-3 text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-black transition-all text-[15px]';
 
+const BLIPSGO_ADMIN_URL = 'https://www.blipsgo.com/admin';
+
 const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
@@ -55,7 +57,7 @@ const Login: React.FC = () => {
             setAccessTokenCookie(accessToken);
             dispatch(loggedIn({ token: accessToken, user: null }));
             showSuccess('Logged in successfully');
-            navigate('/admin');
+            window.location.assign(BLIPSGO_ADMIN_URL);
           } catch (error) {
             showError(getApiErrorMessage(error, 'Invalid email/phone or password'));
           } finally {
