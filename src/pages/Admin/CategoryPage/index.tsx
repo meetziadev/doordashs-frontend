@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { ProductCard } from '@/components';
 import { Slider } from '@/components/Slider';
+import { CategoryPageSkeleton } from '@/components/Skeletons';
 import { useGetProductsByCategoryQuery } from '@services/productService';
 import { mapApiProductsToCards } from '@utils/productUtils';
 
@@ -19,6 +20,10 @@ const CategoryPage: React.FC = () => {
   const products = mapApiProductsToCards(data?.items ?? []);
   const categoryName = data?.items?.[0]?.categories?.find((c) => c.slug === slug)?.name ?? slug;
 
+  if (isLoading) {
+    return <CategoryPageSkeleton />;
+  }
+
   return (
     <div className="space-y-8">
       <Breadcrumbs
@@ -33,9 +38,7 @@ const CategoryPage: React.FC = () => {
         <p className="text-sm text-gray-500 mt-2">{products.length} products</p>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-gray-500">Loading products...</p>
-      ) : products.length ? (
+      {products.length ? (
         <Slider
           items={products}
           getKey={(product) => product.slug}

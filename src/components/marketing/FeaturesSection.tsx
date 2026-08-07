@@ -4,7 +4,7 @@ import {
   PremiumQualityIcon,
   EasyReturnsIcon,
   SecurePaymentsIcon
-} from '../icons/svgIcon';
+} from '@assets/icons';
 
 // Generic reusable feature item component
 interface FeatureItemProps {
@@ -37,11 +37,7 @@ export const FeaturesSection: React.FC = () => {
     <section className="w-full bg-white py-10 md:py-14 my-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-8 sm:gap-x-12 lg:gap-x-8">
-          <FeatureItem
-            icon={<FreeShippingIcon />}
-            title="Free Shipping"
-            subtitle="Free delivery on all orders above Rs 5,000."
-          />
+        
           <FeatureItem
             icon={<PremiumQualityIcon />}
             title="Premium Quality"

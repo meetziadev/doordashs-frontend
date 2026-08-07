@@ -1,14 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, Search, ShoppingCart, User } from '@assets/icons';
-import { classNames } from '@utils/helpers';
 import { useUnifiedSearch } from '@hooks/useUnifiedSearch';
 import { getSearchResultPath, type SearchResult } from '@utils/searchUtils';
-import NotificationsDropdown from '@/components/UI/NotificationsDropdown';
+import NotificationsDropdown from '@/components/common/NotificationsDropdown';
 
 export type AdminTopbarProps = { onMenu: () => void };
-
-type FulfillmentMode = 'delivery' | 'pickup';
 
 const SearchSection: React.FC<{
   title: string;
@@ -52,22 +49,10 @@ const SearchSection: React.FC<{
 const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
-  const [mode, setMode] = useState<FulfillmentMode>('delivery');
   const [query, setQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
 
   const { results, hasResults, isSearching } = useUnifiedSearch(query);
-
-  const pillClass = useCallback(
-    (active: boolean) =>
-      classNames(
-        'rounded-full border px-4 py-1.5 text-sm font-medium transition-colors',
-        active
-          ? 'border-foreground bg-foreground text-inverse-foreground'
-          : 'border-border-strong text-muted-foreground hover:border-foreground/40'
-      ),
-    []
-  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -139,14 +124,6 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(({ onMenu }) => {
       </div>
 
       <div className="ml-auto flex shrink-0 items-center gap-3">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setMode('delivery')} className={pillClass(mode === 'delivery')}>
-            Delivery
-          </button>
-          <button type="button" onClick={() => setMode('pickup')} className={pillClass(mode === 'pickup')}>
-            Pickup
-          </button>
-        </div>
         <NotificationsDropdown />
         <button
           type="button"

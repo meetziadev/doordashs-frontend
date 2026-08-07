@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import DataTableLib from 'react-data-table-component';
 import { classNames } from '@utils/helpers';
 import { TableColumn } from '@/types';
-import Loader from '../UI/Loader';
+import Loader from '../common/Loader';
 
 type Props<T = any> = {
   columns: TableColumn<T>[];

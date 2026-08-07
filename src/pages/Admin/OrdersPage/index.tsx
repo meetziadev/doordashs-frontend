@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
-import Tabs, { TabItem } from '@/components/UI/Tabs';
-import HistoryOrderCard from '@/components/UI/HistoryOrderCard';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+import Tabs, { TabItem } from '@/components/common/Tabs';
+import HistoryOrderCard from '@/components/orders/HistoryOrderCard';
 import ActiveOrderCardLoader from './ActiveOrderCardLoader';
+import { OrdersPageSkeleton } from '@/components/Skeletons';
 import { useGetActiveOrdersQuery, useGetOrderHistoryQuery } from '@services/orderService';
 import { mapHistoryOrderToRow } from '@utils/orderUtils';
 
@@ -106,11 +107,7 @@ export const OrdersPage: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="max-w-[1400px] mx-auto p-6">
-        <p className="text-gray-500">Loading orders...</p>
-      </div>
-    );
+    return <OrdersPageSkeleton />;
   }
 
   if (isError) {

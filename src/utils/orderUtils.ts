@@ -1,5 +1,5 @@
-import type { ActiveOrderItem } from '@/components/UI/ActiveOrderCard';
-import type { HistoryOrderRow } from '@/components/UI/HistoryOrderCard';
+import type { ActiveOrderItem } from '@/components/orders/ActiveOrderCard';
+import type { HistoryOrderRow } from '@/components/orders/HistoryOrderCard';
 import type { OrderDetails, OrderListItem, OrderStatus } from '@/types/order';
 
 export const formatOrderPrice = (amount: number): string =>

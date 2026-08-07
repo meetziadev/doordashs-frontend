@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
-import CheckoutForm from '@/components/UI/CheckoutForm';
-import CheckoutSummary from '@/components/UI/CheckoutSummary';
-import CheckoutSuccess from '@/components/UI/CheckoutSuccess';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+import CheckoutForm from '@/components/cart/CheckoutForm';
+import CheckoutSummary from '@/components/cart/CheckoutSummary';
+import CheckoutSuccess from '@/components/cart/CheckoutSuccess';
 import { useGetCartQuery, useCheckoutMutation } from '@services/cartService';
 import { useGetAddressesQuery } from '@services/addressService';
 import { useGetBrandsQuery } from '@services/brandService';
 import { mapCartItemsToView } from '@utils/cartUtils';
+import { CheckoutPageSkeleton } from '@/components/Skeletons';
 import { getApiErrorMessage } from '@utils/authUtils';
 import { useToastContext } from '@components/Toast';
 import type { CheckoutResult } from '@/types/cart';
@@ -66,11 +67,7 @@ export const CheckoutPage: React.FC = () => {
   ];
 
   if (isCartLoading || isAddressesLoading) {
-    return (
-      <div className="max-w-[1400px] mx-auto p-6">
-        <p className="text-gray-500">Loading checkout...</p>
-      </div>
-    );
+    return <CheckoutPageSkeleton />;
   }
 
   if (isCartError) {

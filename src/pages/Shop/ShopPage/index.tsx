@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import ProductCollectionPage from '@pages/Admin/ProductCollectionPage';
+import ProductCollectionPage from '@pages/Shop/ProductCollectionPage';
 import { useGetProductsQuery } from '@services/productService';
 import { mapApiProductsToCards } from '@utils/productUtils';
 

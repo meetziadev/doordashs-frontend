@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { ProductCard } from '@/components';
-import type { Product } from '@/components/UI/ProductCard';
+import type { Product } from '@/components/product/ProductCard';
+import { ProductGridSkeleton } from '@/components/Skeletons';
 
 type ProductCollectionPageProps = {
   title: string;
@@ -40,7 +41,7 @@ const ProductCollectionPage: React.FC<ProductCollectionPageProps> = ({
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-gray-500">Loading products...</p>
+        <ProductGridSkeleton count={10} />
       ) : products.length ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
           {products.map((product) => (
