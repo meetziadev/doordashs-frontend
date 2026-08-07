@@ -8,6 +8,7 @@ import {
   useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation
 } from '@services/notificationService';
+import { NotificationListSkeleton } from '@/components/Skeletons';
 import {
   formatNotificationTime,
   getNotificationCreatedAt,
@@ -132,7 +133,7 @@ const NotificationsDropdown: React.FC = () => {
 
           <div className="max-h-[380px] overflow-y-auto">
             {isLoading ? (
-              <p className="px-4 py-6 text-sm text-gray-500">Loading notifications...</p>
+              <NotificationListSkeleton />
             ) : isError ? (
               <p className="px-4 py-6 text-sm text-gray-500">
                 Unable to load notifications. Please try again.

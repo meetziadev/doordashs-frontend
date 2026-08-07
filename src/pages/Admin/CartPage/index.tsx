@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail } from '@assets/icons';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
-import CartItem from '@/components/UI/CartItem';
-import OrderSummary from '@/components/UI/OrderSummary';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+import CartItem from '@/components/cart/CartItem';
+import OrderSummary from '@/components/cart/OrderSummary';
 import {
   useGetCartQuery,
   useRemoveCartItemMutation,
@@ -11,6 +11,7 @@ import {
 } from '@services/cartService';
 import { useGetBrandsQuery } from '@services/brandService';
 import { mapCartItemsToView } from '@utils/cartUtils';
+import { CartPageSkeleton } from '@/components/Skeletons';
 import { getApiErrorMessage } from '@utils/authUtils';
 import { useToastContext } from '@components/Toast';
 
@@ -60,11 +61,7 @@ export const CartPage: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="max-w-[1400px] mx-auto p-6">
-        <p className="text-gray-500">Loading cart...</p>
-      </div>
-    );
+    return <CartPageSkeleton />;
   }
 
   if (isError) {

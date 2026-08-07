@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { ProductCard } from '@/components';
 import { Slider } from '@/components/Slider';
+import { BrandPageSkeleton } from '@/components/Skeletons';
 import { useGetBrandProductsQuery } from '@services/brandService';
 import { mapApiProductsToCards } from '@utils/productUtils';
 
@@ -14,6 +15,10 @@ const BrandPage: React.FC = () => {
 
   const products = mapApiProductsToCards(data?.items ?? []);
   const brandName = data?.brand?.name ?? slug;
+
+  if (isLoading) {
+    return <BrandPageSkeleton />;
+  }
 
   return (
     <div className="space-y-8">
@@ -41,9 +46,7 @@ const BrandPage: React.FC = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-gray-500">Loading products...</p>
-      ) : products.length ? (
+      {products.length ? (
         <Slider
           items={products}
           getKey={(product) => product.slug}

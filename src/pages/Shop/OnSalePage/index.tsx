@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductCollectionPage from '@pages/Admin/ProductCollectionPage';
+import ProductCollectionPage from '@pages/Shop/ProductCollectionPage';
 import { useGetOnSaleProductsQuery } from '@services/productService';
 import { mapApiProductsToCards } from '@utils/productUtils';
 

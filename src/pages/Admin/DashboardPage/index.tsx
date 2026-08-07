@@ -14,6 +14,12 @@ import {
   useGetTrendingProductsQuery
 } from '@services/productService';
 import {
+  CategoryRowSkeleton,
+  CategoryTileRowSkeleton,
+  ProductOfTheDaySkeleton,
+  ProductSliderSkeleton
+} from '@/components/Skeletons';
+import {
   extractCategoriesFromProducts,
   mapApiProductsToCards
 } from '@utils/productUtils';
@@ -29,7 +35,7 @@ const ProductSlider: React.FC<{
   isLoading?: boolean;
 }> = ({ products, ariaLabel, isLoading }) => {
   if (isLoading) {
-    return <p className="text-sm text-gray-500">Loading products...</p>;
+    return <ProductSliderSkeleton />;
   }
 
   if (!products.length) {
@@ -83,7 +89,7 @@ const AdminDashboard: React.FC = () => {
     <div className="space-y-12">
       <section aria-label="Shop by category">
         {isCatalogLoading ? (
-          <p className="text-sm text-gray-500">Loading categories...</p>
+          <CategoryRowSkeleton />
         ) : categories.length ? (
           <Slider
             items={categories}
@@ -107,7 +113,7 @@ const AdminDashboard: React.FC = () => {
 
       <CollectionSection title="Shop by Category">
         {isCatalogLoading ? (
-          <p className="text-sm text-gray-500">Loading categories...</p>
+          <CategoryTileRowSkeleton />
         ) : categories.length ? (
           <Slider
             items={categories}
@@ -139,7 +145,11 @@ const AdminDashboard: React.FC = () => {
         />
       </CollectionSection>
 
-      <ProductOfTheDay product={productOfTheDay} isLoading={isFeaturedLoading && isTrendingLoading} />
+      {isFeaturedLoading && isTrendingLoading ? (
+        <ProductOfTheDaySkeleton />
+      ) : (
+        <ProductOfTheDay product={productOfTheDay} isLoading={false} />
+      )}
 
       <CollectionSection title="Top Selling">
         <ProductSlider

@@ -1,4 +1,4 @@
-import type { Product } from '@/components/UI/ProductCard';
+import type { Product } from '@/components/product/ProductCard';
 import type { ApiProduct, Brand, ProductCategory, ProductVariant } from '@/types/product';
 
 export const mapApiProductToCard = (product: ApiProduct): Product => {

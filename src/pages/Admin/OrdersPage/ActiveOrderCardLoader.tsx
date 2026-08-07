@@ -1,5 +1,6 @@
 import React from 'react';
-import ActiveOrderCard from '@/components/UI/ActiveOrderCard';
+import ActiveOrderCard from '@/components/orders/ActiveOrderCard';
+import { ActiveOrderCardSkeleton } from '@/components/Skeletons';
 import { useCancelOrderMutation, useGetOrderDetailsQuery } from '@services/orderService';
 import {
   canCancelOrder,
@@ -23,11 +24,7 @@ const ActiveOrderCardLoader: React.FC<Props> = ({ orderId, isHighlighted = false
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
 
   if (isLoading || !data) {
-    return (
-      <div className="rounded-[12px] border border-gray-200 p-6 text-sm text-gray-500">
-        Loading order...
-      </div>
-    );
+    return <ActiveOrderCardSkeleton />;
   }
 
   const handleCancel = async () => {

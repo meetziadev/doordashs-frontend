@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { StylesConfig } from 'react-select';
 import { Calendar } from '@assets/icons';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
-import ProfileHeaderCard from '@/components/UI/ProfileHeaderCard';
-import ProfileFormGroup from '@/components/UI/ProfileFormGroup';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+import ProfileHeaderCard from '@/components/profile/ProfileHeaderCard';
+import ProfileFormGroup from '@/components/profile/ProfileFormGroup';
 import FormInput from '@/components/Form/FormInput';
 import FormSelect from '@/components/Form/FormSelect';
 import {
@@ -23,6 +23,7 @@ import { userLogout } from '@redux/slices/authSlice';
 import { clearAccessTokenCookie } from '@utils/cookieUtils';
 import { getApiErrorMessage } from '@utils/authUtils';
 import { useToastContext } from '@components/Toast';
+import { ProfilePageSkeleton } from '@/components/Skeletons';
 
 const genderOptions = [
   { value: 'male', label: 'Male' },
@@ -278,11 +279,7 @@ export const ProfilePage: React.FC = () => {
   const isSavingAddress = isCreatingAddress || isUpdatingAddress;
 
   if (isLoading) {
-    return (
-      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto p-6 bg-white font-arial">
-        <p className="text-gray-500">Loading profile...</p>
-      </div>
-    );
+    return <ProfilePageSkeleton />;
   }
 
   return (

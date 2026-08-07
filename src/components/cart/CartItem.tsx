@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trash2 } from '@assets/icons';
-import QuantitySelector from './QuantitySelector';
+import QuantitySelector from '@/components/product/QuantitySelector';
 
 export interface CartItemProps {
   id: string;

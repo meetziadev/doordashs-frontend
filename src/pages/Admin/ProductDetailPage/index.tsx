@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Star } from '@assets/icons';
-import Tabs from '@/components/UI/Tabs';
-import Breadcrumbs from '@/components/UI/Breadcrumbs';
-import ProductGallery from '@/components/UI/ProductGallery';
-import QuantitySelector from '@/components/UI/QuantitySelector';
+import Tabs from '@/components/common/Tabs';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+import ProductGallery from '@/components/product/ProductGallery';
+import QuantitySelector from '@/components/product/QuantitySelector';
 import { useGetProductBySlugQuery } from '@services/productService';
 import { useGetBrandsQuery } from '@services/brandService';
 import { useAddCartItemMutation } from '@services/cartService';
@@ -15,6 +15,7 @@ import {
   getVariantSizes,
   mapApiProductToCard
 } from '@utils/productUtils';
+import { ProductDetailSkeleton } from '@/components/Skeletons';
 import { getApiErrorMessage } from '@utils/authUtils';
 import { useToastContext } from '@components/Toast';
 
@@ -100,11 +101,7 @@ export const ProductDetailPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="max-w-[1400px] mx-auto p-6">
-        <p className="text-gray-500">Loading product...</p>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (isError || !product) {
@@ -183,7 +180,6 @@ export const ProductDetailPage: React.FC = () => {
         <div className="space-y-4">
           <h3 className="text-[14px] font-extrabold font-sans tracking-wide">Shipping Information</h3>
           <div className="mt-3 space-y-2 text-[12px] text-gray-500">
-            <p>Courier: 2 - 4 days, free shipping</p>
             <p>Local Shipping: up to one week</p>
             <p>Cash on delivery available at checkout</p>
           </div>
