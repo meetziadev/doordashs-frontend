@@ -65,6 +65,23 @@ export const extractCategoriesFromProducts = (
   return Array.from(categoryMap.values());
 };
 
+export const extractNavCategories = (
+  products: ApiProduct[]
+): ProductCategory[] => {
+  const categoryMap = new Map<string, ProductCategory>();
+
+  products.forEach((product) => {
+    product.categories?.forEach((category) => {
+      const key = category.name.trim().toLowerCase();
+      if (key && !categoryMap.has(key)) {
+        categoryMap.set(key, category);
+      }
+    });
+  });
+
+  return Array.from(categoryMap.values());
+};
+
 export const getProductPrimaryImage = (product: ApiProduct): string | undefined =>
   product.images?.find((image) => image.is_primary)?.url || product.images?.[0]?.url;
 

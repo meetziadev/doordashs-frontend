@@ -8,6 +8,8 @@ import { getSidebarItems } from '@/components/Sidebar/sidebarData';
 import { useSidebarTree } from '@/components/Sidebar/useSidebarTree';
 import { flattenSidebarItems } from '@/components/Sidebar/utils';
 import { useGetBrandsQuery } from '@services/brandService';
+import { useGetProductsQuery } from '@services/productService';
+import { extractNavCategories } from '@utils/productUtils';
 
 export type AdminSidebarProps = { isOpen: boolean; onClose: () => void };
 
@@ -16,7 +18,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { data: brands = [] } = useGetBrandsQuery();
-    const sidebarItems = useMemo(() => getSidebarItems(brands), [brands]);
+    const { data: catalogData } = useGetProductsQuery({ page: 1, limit: 100, sort: 'newest' });
+    const categories = useMemo(
+        () => extractNavCategories(catalogData?.items ?? []),
+        [catalogData?.items]
+    );
+    const sidebarItems = useMemo(() => getSidebarItems(brands, categories), [brands, categories]);
     const { openIds, checkedIds, toggleGroup, toggleCheckbox } = useSidebarTree(sidebarItems);
     const flatItems = useMemo(() => flattenSidebarItems(sidebarItems), [sidebarItems]);
     const isFirstRender = useRef(true);
@@ -41,7 +48,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
     return (
         <aside
             className={
-                `fixed inset-y-0 left-0 w-sidebar bg-white text-sidebar-foreground flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl ` +
+                `fixed top-[92px] bottom-0 left-0 w-sidebar bg-white text-sidebar-foreground flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl ` +
                 (isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
             }
         >

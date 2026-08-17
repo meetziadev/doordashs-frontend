@@ -61,6 +61,7 @@ const routes: RouteObject[] = [
           { path: "/shop", element: <ShopPage /> },
           { path: "/on-sale", element: <OnSalePage /> },
           { path: "/new-arrival", element: <NewArrivalPage /> },
+          { path: "/wishlist", element: <ComingSoonPage title="Wishlist" /> },
           {
             path: "/admin/product/:id",
             element: <ProductDetailPage />
