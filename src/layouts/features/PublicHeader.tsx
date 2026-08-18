@@ -35,6 +35,7 @@ const PublicHeader: React.FC = memo(() => {
                     <Search size={18} />
                     <Bell size={18} />
                     <Link to="/login" className="text-blue-600">Login</Link>
+                    <Link to="/register" className="text-blue-600">Sign up</Link>
                 </div>
             </div>
             <FilterSidebar

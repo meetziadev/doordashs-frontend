@@ -38,7 +38,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
         const params = new URLSearchParams();
         if (values.length) params.set('brand', values.join(','));
         navigate({ pathname: '/shop', search: params.toString() });
-    }, [checkedIds, flatItems, navigate]);
+        // Only re-run when the user actually (un)checks a brand — `flatItems` changes
+        // reference whenever brand/category data finishes loading, which would otherwise
+        // fire a phantom redirect to /shop after the isFirstRender guard has passed.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [checkedIds]);
 
     const logout = useCallback(() => {
         dispatch(userLogout());
@@ -47,8 +51,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = memo(({ isOpen, onClose }) => 
 
     return (
         <aside
+            style={{ top: 'var(--admin-header-height, 100px)' }}
             className={
-                `fixed top-[92px] bottom-0 left-0 w-sidebar bg-white text-sidebar-foreground flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl ` +
+                `fixed bottom-0 left-0 w-sidebar bg-white text-sidebar-foreground flex flex-col transition-transform duration-200 md:translate-x-0 z-40 shadow-xl ` +
                 (isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
             }
         >

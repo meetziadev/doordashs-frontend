@@ -18,11 +18,13 @@ import {
 import { ProductDetailSkeleton } from '@/components/Skeletons';
 import { getApiErrorMessage } from '@utils/authUtils';
 import { useToastContext } from '@components/Toast';
+import { useAuth } from '@/hooks/useAuth';
 
 export const ProductDetailPage: React.FC = () => {
   const { id: slug = '' } = useParams();
   const navigate = useNavigate();
   const { error: showError, success: showSuccess } = useToastContext();
+  const { isLoggedIn } = useAuth();
 
   const { data: product, isLoading, isError } = useGetProductBySlugQuery(slug, {
     skip: !slug
@@ -87,6 +89,11 @@ export const ProductDetailPage: React.FC = () => {
       return;
     }
 
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+
     try {
       await addCartItem({
         productId: product._id,
@@ -110,7 +117,7 @@ export const ProductDetailPage: React.FC = () => {
         <p className="text-gray-500">Product not found.</p>
         <button
           type="button"
-          onClick={() => navigate('/admin')}
+          onClick={() => navigate('/shop')}
           className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-semibold cursor-pointer"
         >
           Back to Home
@@ -120,9 +127,9 @@ export const ProductDetailPage: React.FC = () => {
   }
 
   const breadcrumbItems = [
-    { label: 'Home', url: '/admin' },
+    { label: 'Home', url: '/' },
     ...(product.categories?.[0]
-      ? [{ label: product.categories[0].name, url: `/admin/category/${product.categories[0].slug}` }]
+      ? [{ label: product.categories[0].name, url: `/category/${product.categories[0].slug}` }]
       : []),
     { label: product.name }
   ];

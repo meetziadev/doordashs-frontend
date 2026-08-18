@@ -10,7 +10,10 @@ const AdminLayout: React.FC = memo(() => {
     <div className="min-h-screen">
       <AdminSidebar isOpen={open} onClose={close} />
       <AdminTopbar />
-      <main className="pt-[92px]! md:pl-[290px] p-4 md:p-6 min-h-screen overflow-auto bg-white">
+      <main
+        className="md:pl-[290px] p-4 md:p-6 min-h-screen overflow-auto bg-white"
+        style={{ paddingTop: 'var(--admin-header-height, 100px)' }}
+      >
         <Outlet />
       </main>
     </div>

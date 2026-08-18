@@ -32,7 +32,7 @@ export const HEADER_AUDIENCE_OPTIONS = [
 export type HeaderAudienceId = (typeof HEADER_AUDIENCE_OPTIONS)[number]['id'];
 
 export const HEADER_NAV_LINKS = [
-  { id: 'home', label: 'The Home', to: '/admin', end: true },
+  { id: 'home', label: 'The Home', to: '/', end: true },
   { id: 'premium', label: 'Premium', to: '/new-arrival' },
   { id: 'children', label: 'Children', to: '/shop?category=children' },
   { id: 'outlet', label: 'Outlet', to: '/on-sale' },

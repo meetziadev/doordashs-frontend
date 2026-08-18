@@ -14,7 +14,7 @@ const buildCategoryOptions = (categories: ProductCategory[] = []): SidebarItem[]
     id: `category-${category.slug}`,
     label: category.name,
     type: 'link',
-    href: `/admin/category/${category.slug}`
+    href: `/category/${category.slug}`
   }));
 
 export const getSidebarItems = (

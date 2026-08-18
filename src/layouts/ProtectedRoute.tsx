@@ -3,11 +3,11 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 const ProtectedRoute: React.FC<{ roles?: string[] }> = ({ roles }) => {
-  // const { isLoggedIn, role } = useAuth();
-  const role =  'admin';
-  const isLoggedIn = true;
+  const { isLoggedIn, role } = useAuth();
   if (!isLoggedIn) return <Navigate to="/login" replace />;
-  if (roles && roles.length && !roles.includes(role as string)) return <Navigate to="/unauth" replace />;
+  if (roles && roles.length && role && !roles.includes(role)) {
+    return <Navigate to="/unauth" replace />;
+  }
   return <Outlet />;
 };
 

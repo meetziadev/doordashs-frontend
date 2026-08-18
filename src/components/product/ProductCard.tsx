@@ -39,7 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className, on
     if (onClick) {
       onClick();
     } else {
-      navigate(`/admin/product/${product.slug}`);
+      navigate(`/product/${product.slug}`);
     }
   };
 

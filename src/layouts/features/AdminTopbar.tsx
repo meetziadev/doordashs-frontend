@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   ChevronDown,
@@ -122,6 +122,7 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
   const { isLoggedIn } = useAuth();
   const searchRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   const [query, setQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
@@ -169,6 +170,20 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
     return () => window.clearInterval(timer);
   }, []);
 
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const updateHeight = () => {
+      document.documentElement.style.setProperty('--admin-header-height', `${header.offsetHeight}px`);
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (placeholderHints.length < 2) return;
     const timer = window.setInterval(() => {
@@ -206,11 +221,11 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
     }`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+    <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 bg-white">
       <div className="h-9 bg-black text-white text-[12px] flex items-center justify-between gap-3 px-4 md:px-6">
         <button
           type="button"
-          onClick={() => navigate('/admin')}
+          onClick={() => navigate('/')}
           className="shrink-0 font-serif text-sm tracking-[0.2em] uppercase cursor-pointer"
         >
           Fashion
@@ -363,6 +378,15 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
             >
               {isLoggedIn ? 'Account' : 'Log in'}
             </button>
+            {!isLoggedIn ? (
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="text-[13px] text-gray-900 hover:opacity-70 cursor-pointer"
+              >
+                Sign up
+              </button>
+            ) : null}
             <button
               type="button"
               className="text-gray-900 hover:opacity-70 cursor-pointer"

@@ -65,7 +65,7 @@ export const ProductOfTheDay: React.FC<Props> = ({ product, isLoading }) => {
 
   const handleShopNow = () => {
     if (product?.slug) {
-      navigate(`/admin/product/${product.slug}`);
+      navigate(`/product/${product.slug}`);
     }
   };
 
