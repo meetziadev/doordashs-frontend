@@ -43,7 +43,7 @@ export const getEstimatedDeliveryLabel = (details: OrderDetails): string => {
   if (details.order.estimatedDeliveryTime) {
     return formatOrderDate(details.order.estimatedDeliveryTime);
   }
-  return '3-5 business days';
+  return '2 Hours';
 };
 
 export const canCancelOrder = (status: OrderStatus): boolean => status === 'pending';

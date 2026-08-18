@@ -4,7 +4,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Heart,
   Languages,
   Search,
   ShoppingCart
@@ -128,7 +127,6 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
   const [showResults, setShowResults] = useState(false);
   const [promoIndex, setPromoIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [language, setLanguage] = useState<(typeof HEADER_LANGUAGES)[number]>(HEADER_LANGUAGES[0]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [selectedAudience, setSelectedAudience] = useState<HeaderAudienceId>('women');
 
@@ -203,39 +201,20 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
     : 'Search for';
 
   const navLinkClass = (active: boolean) =>
-    `text-[13px] whitespace-nowrap pb-0.5 cursor-pointer ${
+    `text-[15px] whitespace-nowrap pb-1 cursor-pointer ${
       active ? 'font-semibold text-black border-b-2 border-black' : 'text-gray-800 hover:text-black'
     }`;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white">
       <div className="h-9 bg-black text-white text-[12px] flex items-center justify-between gap-3 px-4 md:px-6">
-        <div className="flex items-center gap-3 min-w-0">
-          <UtilityDropdown
-            label={
-              <>
-                <span>{language.label}</span>
-                <Languages size={13} />
-              </>
-            }
-          >
-            {HEADER_LANGUAGES.map((item) => (
-              <button
-                key={item.code}
-                type="button"
-                onClick={() => setLanguage(item)}
-                className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50 cursor-pointer"
-              >
-                {item.label}
-              </button>
-            ))}
-          </UtilityDropdown>
-          <span className="hidden sm:block h-3 w-px bg-white/30" />
-          <span className="flex items-center gap-1.5 text-white/90">
-            <span className="hidden sm:inline">{HEADER_REGIONS[0].label}</span>
-            <span>{HEADER_REGIONS[0].flag}</span>
-          </span>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate('/admin')}
+          className="shrink-0 font-serif text-sm tracking-[0.2em] uppercase cursor-pointer"
+        >
+          Fashion
+        </button>
 
         <div className="flex items-center gap-3 min-w-0">
           <button
@@ -263,139 +242,155 @@ const AdminTopbar: React.FC<AdminTopbarProps> = memo(() => {
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => navigate('/admin')}
-          className="shrink-0 font-serif text-sm tracking-[0.2em] uppercase cursor-pointer"
-        >
-          Fashion
-        </button>
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="flex items-center gap-1.5 text-white/90">
+            <span>{HEADER_LANGUAGES[0].label}</span>
+            <Languages size={13} />
+          </span>
+          <span className="hidden sm:block h-3 w-px bg-white/30" />
+          <span className="flex items-center gap-1.5 text-white/90">
+            <span className="hidden sm:inline">{HEADER_REGIONS[0].label}</span>
+            <span>{HEADER_REGIONS[0].flag}</span>
+          </span>
+        </div>
       </div>
 
-      <div className="h-14 border-b border-gray-100 flex items-center gap-3 md:gap-5 px-4 md:px-6">
-        <div className="flex items-center gap-3 md:gap-4 shrink-0">
-          <button
-            type="button"
-            onClick={() => navigate(isLoggedIn ? '/admin/profile' : '/login')}
-            className="text-[13px] text-gray-900 hover:opacity-70 cursor-pointer"
-          >
-            {isLoggedIn ? 'Account' : 'Log in'}
-          </button>
-          <button
-            type="button"
-            className="text-gray-900 hover:opacity-70 cursor-pointer"
-            aria-label="Cart"
-            onClick={() => navigate('/admin/cart')}
-          >
-            <ShoppingCart size={18} strokeWidth={1.6} />
-          </button>
-          <button
-            type="button"
-            className="text-gray-900 hover:opacity-70 cursor-pointer"
-            aria-label="Wishlist"
-            onClick={() => navigate('/wishlist')}
-          >
-            <Heart size={18} strokeWidth={1.6} />
-          </button>
-          <NotificationsDropdown />
-        </div>
-
-        <div className="relative flex-1 min-w-0" ref={searchRef}>
-          <form onSubmit={handleSubmit} className="relative">
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setShowResults(true);
-              }}
-              onFocus={() => query.trim() && setShowResults(true)}
-              placeholder={searchPlaceholder}
-              className="h-9 w-full appearance-none rounded-full border border-[#E5E5E5] bg-[#F7F7F7] pl-4 pr-10 text-[13px] text-[#111111] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#D4D4D4] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
-            />
-            <Search
-              size={16}
-              strokeWidth={1.75}
-              className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8A8A8A]"
-            />
-          </form>
-
-          {showDropdown && (
-            <div className="absolute left-0 right-0 top-[calc(100%+8px)] max-h-[420px] overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-lg z-50">
-              {isSearching ? (
-                <p className="px-4 py-3 text-sm text-gray-500">Searching...</p>
-              ) : hasResults ? (
-                <>
-                  <SearchSection title="Brands" items={results.brands} onSelect={handleSelect} />
-                  <SearchSection title="Categories" items={results.categories} onSelect={handleSelect} />
-                  <SearchSection title="Products" items={results.products} onSelect={handleSelect} />
-                </>
-              ) : (
-                <p className="px-4 py-3 text-sm text-gray-500">
-                  No results for &quot;{query.trim()}&quot;
-                </p>
-              )}
+        <div className="border-b border-gray-100 px-4 md:px-6 min-w-0">
+        <div className="flex items-center gap-3 md:gap-5 xl:h-16">
+          <nav className="hidden xl:flex items-center gap-5 shrink-0 min-w-0">
+            <div className="relative" ref={moreRef}>
+              <button
+                type="button"
+                onClick={() => setMoreOpen((open) => !open)}
+                className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1 text-[13px] text-gray-900 cursor-pointer"
+              >
+                <ChevronDown size={12} />
+                {selectedAudienceLabel}
+              </button>
+              {moreOpen ? (
+                <div className="absolute left-0 top-[calc(100%+8px)] min-w-[200px] rounded-xl border border-gray-200 bg-white py-2 shadow-lg z-50">
+                  {HEADER_AUDIENCE_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => goToAudience(option.id)}
+                      className={`block w-full px-4 py-2 text-left text-sm cursor-pointer ${
+                        selectedAudience === option.id
+                          ? 'font-semibold text-black bg-gray-50'
+                          : 'text-gray-800 hover:bg-gray-50'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
             </div>
-          )}
-        </div>
 
-        <nav className="hidden xl:flex items-center gap-5 shrink-0 min-w-0">
-          {HEADER_NAV_LINKS.map((link) => {
-            const active = isNavLinkActive(link.to, location.pathname, location.search);
+            {HEADER_NAV_LINKS.map((link) => {
+              const active = isNavLinkActive(link.to, location.pathname, location.search);
 
-            if (link.to.includes('?')) {
+              if (link.to.includes('?')) {
+                return (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => navigate(link.to)}
+                    className={navLinkClass(active)}
+                  >
+                    {link.label}
+                  </button>
+                );
+              }
+
               return (
-                <button
+                <NavLink
                   key={link.id}
-                  type="button"
-                  onClick={() => navigate(link.to)}
-                  className={navLinkClass(active)}
+                  to={link.to}
+                  end={'end' in link ? link.end : false}
+                  className={() => navLinkClass(active)}
                 >
                   {link.label}
-                </button>
+                </NavLink>
               );
-            }
+            })}
+          </nav>
 
-            return (
-              <NavLink
-                key={link.id}
-                to={link.to}
-                end={'end' in link ? link.end : false}
-                className={() => navLinkClass(active)}
-              >
-                {link.label}
-              </NavLink>
-            );
-          })}
-          <div className="relative" ref={moreRef}>
+        <div className="relative w-[360px] shrink-0" ref={searchRef}>
+            <form onSubmit={handleSubmit} className="relative">
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => query.trim() && setShowResults(true)}
+                placeholder={searchPlaceholder}
+                className="h-9 w-full appearance-none rounded-full border border-[#E5E5E5] bg-[#F7F7F7] pl-4 pr-10 text-[13px] text-[#111111] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#D4D4D4] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+              />
+              <Search
+                size={16}
+                strokeWidth={1.75}
+                className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8A8A8A]"
+              />
+            </form>
+
+            {showDropdown && (
+              <div className="absolute left-0 right-0 top-[calc(100%+8px)] max-h-[420px] overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-lg z-50">
+                {isSearching ? (
+                  <p className="px-4 py-3 text-sm text-gray-500">Searching...</p>
+                ) : hasResults ? (
+                  <>
+                    <SearchSection title="Brands" items={results.brands} onSelect={handleSelect} />
+                    <SearchSection title="Categories" items={results.categories} onSelect={handleSelect} />
+                    <SearchSection title="Products" items={results.products} onSelect={handleSelect} />
+                  </>
+                ) : (
+                  <p className="px-4 py-3 text-sm text-gray-500">
+                    No results for &quot;{query.trim()}&quot;
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 md:gap-4 shrink-0 ml-auto">
             <button
               type="button"
-              onClick={() => setMoreOpen((open) => !open)}
-              className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1 text-[13px] text-gray-900 cursor-pointer"
+              onClick={() => navigate(isLoggedIn ? '/admin/profile' : '/login')}
+              className="text-[13px] text-gray-900 hover:opacity-70 cursor-pointer"
             >
-              <ChevronDown size={12} />
-              {selectedAudienceLabel}
+              {isLoggedIn ? 'Account' : 'Log in'}
             </button>
-            {moreOpen ? (
-              <div className="absolute right-0 top-[calc(100%+8px)] min-w-[200px] rounded-xl border border-gray-200 bg-white py-2 shadow-lg z-50">
-                {HEADER_AUDIENCE_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => goToAudience(option.id)}
-                    className={`block w-full px-4 py-2 text-left text-sm cursor-pointer ${
-                      selectedAudience === option.id
-                        ? 'font-semibold text-black bg-gray-50'
-                        : 'text-gray-800 hover:bg-gray-50'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            ) : null}
+            <button
+              type="button"
+              className="text-gray-900 hover:opacity-70 cursor-pointer"
+              aria-label="Cart"
+              onClick={() => navigate('/admin/cart')}
+            >
+              <ShoppingCart size={18} strokeWidth={1.6} />
+            </button>
+            <NotificationsDropdown />
           </div>
-        </nav>
+        </div>
+
+        {/* Mobile: show ALL navbar items under the search row */}
+        <div className="xl:hidden flex items-center gap-6 py-2 overflow-x-auto whitespace-nowrap">
+          {HEADER_NAV_LINKS.map((link) => {
+            const active = isNavLinkActive(link.to, location.pathname, location.search);
+            return (
+              <button
+                key={link.id}
+                type="button"
+                onClick={() => navigate(link.to)}
+                className={navLinkClass(active)}
+              >
+                {link.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </header>
   );

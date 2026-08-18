@@ -32,12 +32,12 @@ export const HEADER_AUDIENCE_OPTIONS = [
 export type HeaderAudienceId = (typeof HEADER_AUDIENCE_OPTIONS)[number]['id'];
 
 export const HEADER_NAV_LINKS = [
-  { id: 'home', label: 'the home', to: '/admin', end: true },
+  { id: 'home', label: 'The Home', to: '/admin', end: true },
   { id: 'premium', label: 'Premium', to: '/new-arrival' },
-  { id: 'children', label: 'children', to: '/shop?category=children' },
+  { id: 'children', label: 'Children', to: '/shop?category=children' },
   { id: 'outlet', label: 'Outlet', to: '/on-sale' },
   { id: 'beauty', label: 'Beauty Corner', to: '/shop?category=beauty' },
   { id: 'sports', label: 'Sports', to: '/shop?category=sports' },
-  { id: 'fashion', label: 'fashion', to: '/shop' }
+  { id: 'fashion', label: 'Fashion', to: '/shop' }
 ] as const;
 

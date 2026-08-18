@@ -14,7 +14,7 @@ export const CheckoutSuccess: React.FC<Props> = ({
     month: 'long',
     year: 'numeric'
   }),
-  estimatedDelivery = '3-5 business days'
+  estimatedDelivery = '2 Hours'
 }) => {
   return (
     <div className="flex flex-col items-center justify-center text-center py-12 font-arial w-full mt-8">
