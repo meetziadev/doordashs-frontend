@@ -56,12 +56,12 @@ export const filterCategories = (
 export const getSearchResultPath = (result: SearchResult): string => {
   switch (result.type) {
     case 'product':
-      return `/admin/product/${result.slug}`;
+      return `/product/${result.slug}`;
     case 'brand':
-      return `/admin/brand/${result.slug}`;
+      return `/brand/${result.slug}`;
     case 'category':
-      return `/admin/category/${result.slug}`;
+      return `/category/${result.slug}`;
     default:
-      return '/admin';
+      return '/shop';
   }
 };

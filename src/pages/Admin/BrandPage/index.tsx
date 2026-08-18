@@ -24,7 +24,7 @@ const BrandPage: React.FC = () => {
     <div className="space-y-8">
       <Breadcrumbs
         items={[
-          { label: 'Home', url: '/admin' },
+          { label: 'Home', url: '/' },
           { label: brandName || 'Brand' }
         ]}
       />
@@ -63,7 +63,7 @@ const BrandPage: React.FC = () => {
           <p className="text-sm text-gray-500">No products found for this brand.</p>
           <button
             type="button"
-            onClick={() => navigate('/admin')}
+            onClick={() => navigate('/shop')}
             className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-semibold cursor-pointer"
           >
             Back to Home

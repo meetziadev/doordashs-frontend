@@ -5,7 +5,6 @@ import AdminLayout from "@layouts/AdminLayout";
 import AuthLayout from "@layouts/AuthLayout";
 import ProtectedRoute from "@layouts/ProtectedRoute";
 
-const HomePage = lazy(() => import("@pages/Public/HomePage"));
 const AboutPage = lazy(() => import("@pages/Public/AboutPage"));
 const ContactPage = lazy(() => import("@pages/Public/ContactPage"));
 const ComingSoonPage = lazy(() => import("@pages/Public/ComingSoon"));
@@ -30,7 +29,6 @@ const routes: RouteObject[] = [
   {
     element: <PublicLayout />,
     children: [
-      { path: "/", element: <HomePage /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/contact", element: <ContactPage /> },
 
@@ -48,32 +46,30 @@ const routes: RouteObject[] = [
   {
     element: <AdminLayout />,
     children: [
+      // Public shop routes (no authentication required)
+      { path: "/", element: <AdminDashboard /> },
+      { path: "/admin", element: <AdminDashboard /> },
+      { path: "/shop", element: <ShopPage /> },
+      { path: "/on-sale", element: <OnSalePage /> },
+      { path: "/new-arrival", element: <NewArrivalPage /> },
+      { path: "/wishlist", element: <ComingSoonPage title="Wishlist" /> },
+      { path: "/brand", element: <ComingSoonPage title="Brand" /> },
+      { path: "/product/:id", element: <ProductDetailPage /> },
+      { path: "/category/:slug", element: <CategoryPage /> },
+      { path: "/brand/:slug", element: <BrandPage /> },
+
+      // Private admin routes
       {
         element: <ProtectedRoute roles={["admin", "manager"]} />,
         children: [
-          { path: "/admin", element: <AdminDashboard /> },
           { path: "/admin/users", element: <AdminUsers /> },
           { path: "/admin/cart", element: <CartPage /> },
           { path: "/admin/checkout", element: <CheckoutPage /> },
           { path: "/admin/profile", element: <ProfilePage /> },
           { path: "/admin/orders", element: <OrdersPage /> },
-          { path: "/brand", element: <ComingSoonPage title="Brand" /> },
-          { path: "/shop", element: <ShopPage /> },
-          { path: "/on-sale", element: <OnSalePage /> },
-          { path: "/new-arrival", element: <NewArrivalPage /> },
-          { path: "/wishlist", element: <ComingSoonPage title="Wishlist" /> },
-          {
-            path: "/admin/product/:id",
-            element: <ProductDetailPage />
-          },
-          {
-            path: "/admin/category/:slug",
-            element: <CategoryPage />
-          },
-          {
-            path: "/admin/brand/:slug",
-            element: <BrandPage />
-          },
+          { path: "/admin/product/:id", element: <ProductDetailPage /> },
+          { path: "/admin/category/:slug", element: <CategoryPage /> },
+          { path: "/admin/brand/:slug", element: <BrandPage /> },
         ],
       },
     ],

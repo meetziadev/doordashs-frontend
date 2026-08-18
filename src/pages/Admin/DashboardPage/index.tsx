@@ -98,7 +98,7 @@ const AdminDashboard: React.FC = () => {
               <CategorySlideItem
                 label={category.name}
                 image={category.image}
-                onClick={() => navigate(`/admin/category/${category.slug}`)}
+                onClick={() => navigate(`/category/${category.slug}`)}
               />
             )}
             gap="1.5rem"
@@ -122,7 +122,7 @@ const AdminDashboard: React.FC = () => {
               <ProductCategorySlideItem
                 label={category.name}
                 image={category.image}
-                onClick={() => navigate(`/admin/category/${category.slug}`)}
+                onClick={() => navigate(`/category/${category.slug}`)}
               />
             )}
             gap="1rem"
